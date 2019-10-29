@@ -5,14 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:car_traffic_simulation"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="800" MinWidth="800" MinHeight="600" MaxWidth="800" MaxHeight="600">
+        Title="MainWindow" Height="600" Width="1366" MinWidth="1366" MinHeight="600" MaxWidth="1366" MaxHeight="600">
     <Grid x:Name="Content">
         <Canvas x:Name="Roads"></Canvas>
         <Canvas x:Name="Vehicles"></Canvas>
         <Canvas x:Name="Buttons">
-            <Button x:Name="startButton" Content="Start" Canvas.Left="106" Canvas.Top="479" Width="83" Background="White" BorderBrush="#FFE00637" Foreground="#FFE00637" Height="29" BorderThickness="2" ClipToBounds="True" SnapsToDevicePixels="True" FontWeight="Bold" FontSize="14" Padding="3" UseLayoutRounding="True" ScrollViewer.CanContentScroll="True" Click="StartButton_Click"/>
-            <Button x:Name="stopButton" Content="Stop" Canvas.Left="357" Canvas.Top="479" Width="83" Background="White" BorderBrush="#FFE00637" Foreground="#FFE00637" Height="29" BorderThickness="2" ClipToBounds="True" SnapsToDevicePixels="True" FontWeight="Bold" FontSize="14" Padding="3" UseLayoutRounding="True" ScrollViewer.CanContentScroll="True" Click="StopButton_Click"/>
-            <Button x:Name="restartButton" Content="Restart" Canvas.Left="592" Canvas.Top="479" Width="83" Background="White" BorderBrush="#FFE00637" Foreground="#FFE00637" Height="29" BorderThickness="2" ClipToBounds="True" SnapsToDevicePixels="True" FontWeight="Bold" FontSize="14" Padding="3" UseLayoutRounding="True" ScrollViewer.CanContentScroll="True" Click="RestartButton_Click"/>
+            <Button x:Name="startButton" Content="Start" Canvas.Left="403" Canvas.Top="479" Width="83" Background="White" BorderBrush="#FFE00637" Foreground="#FFE00637" Height="29" BorderThickness="2" ClipToBounds="True" SnapsToDevicePixels="True" FontWeight="Bold" FontSize="14" Padding="3" UseLayoutRounding="True" ScrollViewer.CanContentScroll="True" Click="StartButton_Click"/>
+            <Button x:Name="stopButton" Content="Stop" Canvas.Left="654" Canvas.Top="479" Width="83" Background="White" BorderBrush="#FFE00637" Foreground="#FFE00637" Height="29" BorderThickness="2" ClipToBounds="True" SnapsToDevicePixels="True" FontWeight="Bold" FontSize="14" Padding="3" UseLayoutRounding="True" ScrollViewer.CanContentScroll="True" Click="StopButton_Click"/>
+            <Button x:Name="restartButton" Content="Restart" Canvas.Left="889" Canvas.Top="479" Width="83" Background="White" BorderBrush="#FFE00637" Foreground="#FFE00637" Height="29" BorderThickness="2" ClipToBounds="True" SnapsToDevicePixels="True" FontWeight="Bold" FontSize="14" Padding="3" UseLayoutRounding="True" ScrollViewer.CanContentScroll="True" Click="RestartButton_Click"/>
         </Canvas>
     </Grid>
 </Window>

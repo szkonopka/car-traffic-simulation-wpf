@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Xml;
+
 using Action = car_traffic_simulation.objects.Action;
 
 namespace car_traffic_simulation.spawners
@@ -25,7 +27,7 @@ namespace car_traffic_simulation.spawners
 
     public class VehicleRepository
     {
-        public int CurrentVehicleInfoIndex { get; set; } = 0;
+        public int CurrentVehicleIndex { get; set; } = 0;
         public List<Vehicle> Vehicles { get; set; }
 
         private List<VehicleInfo> vehicleInfos;
@@ -55,7 +57,8 @@ namespace car_traffic_simulation.spawners
 
         public void GenerateCar(VehicleInfo vehicleInfo, int x, int y, int velocity, int height, int width, Action action)
         {
-            var vehicle = new Vehicle(x, y, velocity, height, width);
+            var vehicle = new Vehicle(CurrentVehicleIndex, x, y, velocity, height, width);
+            CurrentVehicleIndex++;
 
             vehicle.decideAction(action);
 
@@ -64,6 +67,18 @@ namespace car_traffic_simulation.spawners
             vehicle.image.Width = width;
 
             Vehicles.Add(vehicle);
+        }
+
+        public void LoadVehiclesFromXml(string filePath)
+        {
+            XmlDocument xml = new XmlDocument();
+
+            xml.Load(filePath);
+
+            foreach(XmlNode node in xml.DocumentElement)
+            {
+
+            }
         }
 
         public void LoadExampleVehicleSet()
@@ -77,12 +92,12 @@ namespace car_traffic_simulation.spawners
                 new VehicleInfo("assets/blue-car.png", Rotation.Rotate90)
             };
 
-            GenerateCar(vehicleInfos[0], -40, 295, 2, 35, 70, Action.MoveForward);
-            GenerateCar(vehicleInfos[1], -240, 295, 3, 35, 70, Action.MoveForward);
-            GenerateCar(vehicleInfos[2], -1200, 295, 5, 35, 70, Action.MoveForward);
+            GenerateCar(vehicleInfos[0], -40, 325, 2, 35, 70, Action.MoveForward);
+            GenerateCar(vehicleInfos[1], -240, 325, 3, 35, 70, Action.MoveForward);
+            GenerateCar(vehicleInfos[2], -1200, 325, 5, 35, 70, Action.MoveForward);
 
-            GenerateCar(vehicleInfos[3], 720, 180, 2, 35, 70, Action.MoveBackward);
-            GenerateCar(vehicleInfos[4], 1440, 180, 3, 35, 70, Action.MoveBackward);
+            GenerateCar(vehicleInfos[3], 720, 155, 2, 35, 70, Action.MoveBackward);
+            GenerateCar(vehicleInfos[4], 1440, 155, 3, 35, 70, Action.MoveBackward);
         }
     }
 }

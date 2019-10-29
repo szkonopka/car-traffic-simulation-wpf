@@ -20,6 +20,7 @@ namespace car_traffic_simulation.objects
         public Image image;
         protected int MovementVetor;
         public Action CurrentAction { get; set; }
+        public int ID { get; set; }
         public int X { get; set; }
         public int Y { get; set; }
         public int Height { get; set; }
@@ -30,8 +31,9 @@ namespace car_traffic_simulation.objects
         public int OldVelocity { get; set; }
         public float Angle { get; set; }
 
-        public Vehicle(int x, int y, int velocity, int height, int width)
+        public Vehicle(int id, int x, int y, int velocity, int height, int width)
         {
+            ID = id;
             X = x;
             Y = y;
             Velocity = velocity;
@@ -82,20 +84,94 @@ namespace car_traffic_simulation.objects
 
         public void act(car_traffic_simulation.engines.Environment environment)
         {
-            foreach(var vehicle in environment.vehicleRepository.Vehicles)
+            int CalculatedMovementVectorX = MovementVetor;
+            int CalculatedMovementVectorY = 0;
+
+            foreach (var vehicle in environment.vehicleRepository.Vehicles)
             {
-                if (vehicle.calculatePivotY() == calculatePivotY() 
-                    && ((CurrentAction == Action.MoveForward && vehicle.calculatePivotX() > calculatePivotX()) || (CurrentAction == Action.MoveBackward && vehicle.calculatePivotX() < calculatePivotX()))
-                    && Math.Abs(vehicle.calculatePivotX() - calculatePivotX()) < 2 * Width)
+                if (doesVehicleMoveToTheSameDirection(vehicle) && isVehicleInFront(vehicle) && isVehicleNCarWidthInFrontAtLeast(2, vehicle))
                 {
-                    OldVelocity = Velocity;
-                    Velocity = vehicle.Velocity;
+                    if (isLeftLaneFreeForOutrun(environment))
+                    {
+                        if (outrun(ref CalculatedMovementVectorX, ref CalculatedMovementVectorY, vehicle))
+                        {
+                            Velocity = 0;
+                        }
+                        else
+                        {
+                            Velocity = vehicle.Velocity + 1;
+                        }                        
+                    }
+                    else
+                    {
+                        OldVelocity = Velocity;
+                        Velocity = vehicle.Velocity;
+                    }
                 }
             }
 
             decideAction(CurrentAction);
 
             X += MovementVetor;
+            Y += CalculatedMovementVectorY;
+        }
+
+        public bool outrun(ref int CalculatedMovementVectorX, ref int CalculatedMovementVectorY, Vehicle toOutrun)
+        {
+            if (Y <= (toOutrun.Y + toOutrun.Height))
+            {
+                CalculatedMovementVectorY = 0 - Velocity;
+            }
+
+            if (X >= (toOutrun.X + 2 * toOutrun.Width))
+                return true;
+
+            return false;
+        }
+
+        private bool doesVehicleMoveToTheSameDirection(Vehicle vehicle)
+        {
+            return vehicle.calculatePivotY() + 20 + vehicle.Height >= calculatePivotY() && calculatePivotY() >= vehicle.calculatePivotY() - 20 - vehicle.Height;
+        }
+
+        private bool isVehicleInFront(Vehicle vehicle)
+        {
+            switch (CurrentAction)
+            {
+                case Action.MoveForward:
+                    return vehicle.calculatePivotX() > calculatePivotX();
+                case Action.MoveBackward:
+                    return vehicle.calculatePivotX() < calculatePivotX();
+                default:
+                    return false;
+            }
+        }
+
+        private bool isVehicleNCarWidthInFrontAtLeast(int nCarWidth, Vehicle vehicle)
+        {
+            return Math.Abs(vehicle.calculatePivotX() - calculatePivotX()) < 2 * Width;
+        }
+
+        private bool isLeftLaneFreeForOutrun(car_traffic_simulation.engines.Environment environment)
+        {
+            foreach (var vehicle in environment.vehicleRepository.Vehicles)
+            {
+                if (vehicle.ID == ID)
+                    continue;
+
+                if (vehicle.Y < (Y - 2 * Height))              
+                    continue;
+
+                if (doesVectorIntrudeOnVector(X, X + Width, vehicle.X, vehicle.X + vehicle.Width))
+                    return false;
+            }
+
+            return true;
+        }
+
+        private bool doesVectorIntrudeOnVector(int firstVecFirstX, int firstVecSecX, int secVecFirstX, int secVecSecX)
+        {
+            return !((secVecSecX < firstVecFirstX) || (secVecFirstX > firstVecSecX));
         }
     }
 }
