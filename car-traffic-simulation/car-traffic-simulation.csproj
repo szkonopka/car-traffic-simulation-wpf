@@ -73,7 +73,13 @@
     </ApplicationDefinition>
     <Compile Include="engines\Environment.cs" />
     <Compile Include="engines\EnvironmentEngine.cs" />
+    <Compile Include="objects\EdgeRoad.cs" />
+    <Compile Include="objects\Graph.cs" />
+    <Compile Include="objects\Point2D.cs" />
     <Compile Include="objects\Road.cs" />
+    <Compile Include="objects\Verticle.cs" />
+    <Compile Include="parsers\RoadXmlParser.cs" />
+    <Compile Include="parsers\VehicleXmlParser.cs" />
     <Compile Include="repositories\RoadRepository.cs" />
     <Compile Include="repositories\VehicleRepository.cs" />
     <Page Include="MainWindow.xaml">

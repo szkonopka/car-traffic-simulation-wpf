@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using System.Xml;
 
 namespace car_traffic_simulation.spawners
 {
@@ -15,6 +16,18 @@ namespace car_traffic_simulation.spawners
         public RoadRepository()
         {
             Roads = new List<Road>();
+        }
+
+        public void LoadRoadsFromXml(string filePath)
+        {
+            XmlDocument xml = new XmlDocument();
+
+            xml.Load(filePath);
+
+            foreach (XmlNode node in xml.DocumentElement)
+            {
+
+            }
         }
 
         public void LoadExampleRoadMap()
