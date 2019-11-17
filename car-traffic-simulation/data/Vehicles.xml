@@ -3,31 +3,105 @@
   <vehicle>
     <id>0</id>
     <type>Car</type>
-    <velocity>1</velocity>
+    <velocity>3</velocity>
     <width>70</width>
     <height>35</height>
-    <initX>0</initX>
-    <initY>0</initY>
-    <initAction>MoveForward</initAction>
-    <texture>
-      <useImage>No</useImage>
-      <color>Black</color>
-      <path></path>
-    </texture>
+    <offsetX>0</offsetX>
+    <offsetY>0</offsetY>
+    <texturePath>assets/blue-car.png</texturePath>
+    <rotation>270</rotation>
+    <edgePipeId>1</edgePipeId>
+    <edgeRoadId>1</edgeRoadId>
   </vehicle>
   <vehicle>
     <id>1</id>
     <type>Car</type>
+    <velocity>2</velocity>
+    <width>70</width>
+    <height>35</height>
+    <offsetX>140</offsetX>
+    <offsetY>0</offsetY>
+    <texturePath>assets/green-car.png</texturePath>
+    <rotation>270</rotation>
+    <edgePipeId>1</edgePipeId>
+    <edgeRoadId>1</edgeRoadId>
+  </vehicle>
+  <vehicle>
+    <id>2</id>
+    <type>Car</type>
     <velocity>1</velocity>
     <width>70</width>
     <height>35</height>
-    <initX>0</initX>
-    <initY>0</initY>
-    <initAction>MoveBackward</initAction>
-    <texture>
-      <useImage>No</useImage>
-      <color>Black</color>
-      <path></path>
-    </texture>
+    <offsetX>280</offsetX>
+    <offsetY>0</offsetY>
+    <texturePath>assets/green-car.png</texturePath>
+    <rotation>270</rotation>
+    <edgePipeId>1</edgePipeId>
+    <edgeRoadId>1</edgeRoadId>
+  </vehicle>
+  <vehicle>
+    <id>3</id>
+    <type>Car</type>
+    <velocity>1</velocity>
+    <width>70</width>
+    <height>35</height>
+    <offsetX>0</offsetX>
+    <offsetY>0</offsetY>
+    <texturePath>assets/blue-car.png</texturePath>
+    <rotation>270</rotation>
+    <edgePipeId>1</edgePipeId>
+    <edgeRoadId>0</edgeRoadId>
+  </vehicle>
+  <vehicle>
+    <id>4</id>
+    <type>Car</type>
+    <velocity>2</velocity>
+    <width>70</width>
+    <height>35</height>
+    <offsetX>0</offsetX>
+    <offsetY>0</offsetY>
+    <texturePath>assets/green-car.png</texturePath>
+    <rotation>90</rotation>
+    <edgePipeId>0</edgePipeId>
+    <edgeRoadId>0</edgeRoadId>
+  </vehicle>
+  <vehicle>
+    <id>5</id>
+    <type>Car</type>
+    <velocity>3</velocity>
+    <width>70</width>
+    <height>35</height>
+    <offsetX>0</offsetX>
+    <offsetY>0</offsetY>
+    <texturePath>assets/blue-car.png</texturePath>
+    <rotation>90</rotation>
+    <edgePipeId>0</edgePipeId>
+    <edgeRoadId>1</edgeRoadId>
+  </vehicle>
+  <vehicle>
+    <id>6</id>
+    <type>Car</type>
+    <velocity>2</velocity>
+    <width>70</width>
+    <height>35</height>
+    <offsetX>-140</offsetX>
+    <offsetY>0</offsetY>
+    <texturePath>assets/green-car.png</texturePath>
+    <rotation>90</rotation>
+    <edgePipeId>0</edgePipeId>
+    <edgeRoadId>1</edgeRoadId>
+  </vehicle>
+  <vehicle>
+    <id>7</id>
+    <type>Car</type>
+    <velocity>1</velocity>
+    <width>70</width>
+    <height>35</height>
+    <offsetX>-320</offsetX>
+    <offsetY>0</offsetY>
+    <texturePath>assets/blue-car.png</texturePath>
+    <rotation>90</rotation>
+    <edgePipeId>0</edgePipeId>
+    <edgeRoadId>1</edgeRoadId>
   </vehicle>
 </vehicles>

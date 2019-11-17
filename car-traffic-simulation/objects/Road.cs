@@ -10,13 +10,19 @@ using System.Windows.Media.Imaging;
 
 namespace car_traffic_simulation.objects
 {
+    enum RoadType
+    {
+        Straight,
+        Turn,
+        Intersection
+    };
+
     public class Road
     {
         public Image image { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
-        public int X { get; set; }
-        public int Y { get; set; }
+        public Point2D Position { get; set; }
         
         public Road(string imageSource, int width, int height, int x, int y)
         {
@@ -25,17 +31,16 @@ namespace car_traffic_simulation.objects
             Width = width;
             Height = height;
 
-            X = x;
-            Y = y;
+            Position = new Point2D(x, y);
 
             image.Width = Width;
             image.Height = Height;
         }
 
-        public void Draw()
+        public void RenderBitmap()
         {
-            Canvas.SetTop(image, X);
-            Canvas.SetLeft(image, Y);
+            Canvas.SetTop(image, Position.X);
+            Canvas.SetLeft(image, Position.Y);
         }
     }
 }

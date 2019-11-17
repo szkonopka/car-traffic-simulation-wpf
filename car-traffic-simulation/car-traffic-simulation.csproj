@@ -73,7 +73,12 @@
     </ApplicationDefinition>
     <Compile Include="engines\Environment.cs" />
     <Compile Include="engines\EnvironmentEngine.cs" />
+    <Compile Include="objects\EdgePipe.cs" />
+    <Compile Include="objects\EdgeRoad.cs" />
+    <Compile Include="objects\Point2D.cs" />
     <Compile Include="objects\Road.cs" />
+    <Compile Include="objects\Verticle.cs" />
+    <Compile Include="parsers\GraphXmlParser.cs" />
     <Compile Include="repositories\RoadRepository.cs" />
     <Compile Include="repositories\VehicleRepository.cs" />
     <Page Include="MainWindow.xaml">
@@ -136,6 +141,15 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Roads.xml" />
+    <Resource Include="RoadsConfiguration.xml" />
+    <Resource Include="Vehicles.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="data\Roads.xml" />
+    <Resource Include="data\Vehicles.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

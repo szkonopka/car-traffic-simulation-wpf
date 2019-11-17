@@ -17,6 +17,7 @@ using System.Windows.Threading;
 using System.Runtime.InteropServices;
 using car_traffic_simulation.engines;
 using Environment = car_traffic_simulation.engines.Environment;
+using car_traffic_simulation.parsers;
 
 namespace car_traffic_simulation
 {
@@ -41,7 +42,7 @@ namespace car_traffic_simulation
         EnvironmentEngine engine;
 
         public MainWindow()
-        {
+        {   
             var handle = NativeMethods.GetConsoleWindow();
 
             InitializeComponent();
@@ -61,8 +62,8 @@ namespace car_traffic_simulation
         {
             foreach(var road in environment.roadRepository.Roads)
             {
-                Canvas.SetTop(road.image, road.Y);
-                Canvas.SetLeft(road.image, road.X);
+                Canvas.SetTop(road.image, road.Position.Y);
+                Canvas.SetLeft(road.image, road.Position.X);
 
                 Roads.Children.Add(road.image);
             }
@@ -72,8 +73,8 @@ namespace car_traffic_simulation
         {
             foreach (var vehicle in environment.vehicleRepository.Vehicles)
             {
-                Canvas.SetTop(vehicle.image, vehicle.Y);
-                Canvas.SetLeft(vehicle.image, vehicle.X);
+                Canvas.SetTop(vehicle.image, vehicle.Position.Y);
+                Canvas.SetLeft(vehicle.image, vehicle.Position.X);
 
                 Vehicles.Children.Add(vehicle.image);
             }
@@ -96,7 +97,7 @@ namespace car_traffic_simulation
             Vehicles.Children.Clear();
             environment.vehicleRepository.Vehicles.Clear();
 
-            environment.vehicleRepository.LoadExampleVehicleSet();
+            environment.vehicleRepository.LoadFromXml("../../data/Vehicles.xml", environment.edgePipes);
             GenerateVehicles();
 
             engine.Start();
