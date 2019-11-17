@@ -29,7 +29,8 @@ namespace car_traffic_simulation.engines
         public void LoadExampleEnvironment()
         {
             roadRepository.LoadExampleRoadMap();
-            vehicleRepository.LoadExampleVehicleSet(edgePipes);
+            //vehicleRepository.LoadExampleVehicleSet(edgePipes);
+            vehicleRepository.LoadFromXml("../../data/Vehicles.xml", edgePipes);
         }
 
         public void Redraw()
