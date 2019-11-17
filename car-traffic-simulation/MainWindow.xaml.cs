@@ -17,6 +17,7 @@ using System.Windows.Threading;
 using System.Runtime.InteropServices;
 using car_traffic_simulation.engines;
 using Environment = car_traffic_simulation.engines.Environment;
+using car_traffic_simulation.parsers;
 
 namespace car_traffic_simulation
 {
@@ -41,7 +42,7 @@ namespace car_traffic_simulation
         EnvironmentEngine engine;
 
         public MainWindow()
-        {
+        {   
             var handle = NativeMethods.GetConsoleWindow();
 
             InitializeComponent();
@@ -51,7 +52,7 @@ namespace car_traffic_simulation
 
             engine = new EnvironmentEngine(environment);
 
-            //GenerateRoads();
+            GenerateRoads();
             GenerateVehicles();
 
             engine.Start();

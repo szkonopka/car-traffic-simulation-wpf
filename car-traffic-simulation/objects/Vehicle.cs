@@ -24,28 +24,23 @@ namespace car_traffic_simulation.objects
         public Point2D Position { get; set; }
         public int Height { get; set; }
         public int Width { get; set; }
-        public int LastX { get; set; }
-        public int LastY { get; set; }
         public int Velocity { get; set; }
         public int OldVelocity { get; set; }
-        public float Angle { get; set; }
         public string TexturePath { get; set; }
         public EdgeRoad CurrentEdge { get; set; }
-        public int newPositionY { get; set; }
+        public int NewPositionY { get; set; }
 
-        public Vehicle(int id, int x, int y, int velocity, int height, int width, EdgeRoad currentEdge)
+        public Vehicle(int id, int offSetX, int offSetY, int velocity, int height, int width, EdgeRoad currentEdge)
         {
             CurrentEdge = currentEdge;
             ID = id;
 
-            Console.WriteLine("X: " + x);
-            Console.WriteLine("Y: " + y);
-            Console.WriteLine("Edge X: " + currentEdge.From.X);
-            Console.WriteLine("Edge Y: " + currentEdge.From.Y);
-
             Position = new Point2D(currentEdge.From);
-            Position.X += x;
-            newPositionY = Position.Y;
+
+            Position.X += offSetX;
+            Position.Y += offSetY;
+
+            NewPositionY = Position.Y;
 
             Velocity = velocity;
             OldVelocity = Velocity;
@@ -99,11 +94,11 @@ namespace car_traffic_simulation.objects
 
             foreach (var vehicle in environment.vehicleRepository.Vehicles)
             {
-                if (newPositionY < Position.Y)
+                if (NewPositionY < Position.Y)
                 {
                     Position.Y -= 1;
                 }
-                else if (newPositionY > Position.Y)
+                else if (NewPositionY > Position.Y)
                 {
                     Position.Y += 1;
                 }
@@ -139,7 +134,7 @@ namespace car_traffic_simulation.objects
                     if (isNextLaneFreeForOutrun(closestEdge, environment.vehicleRepository.Vehicles))
                     {
                         //Position.Y = closestEdge.From.Y;
-                        newPositionY = closestEdge.From.Y;
+                        NewPositionY = closestEdge.From.Y;
                         CurrentEdge = closestEdge; 
                         Velocity += 1;
                     }

@@ -1,4 +1,5 @@
 ﻿using car_traffic_simulation.objects;
+using car_traffic_simulation.parsers;
 using car_traffic_simulation.spawners;
 using System;
 using System.Collections.Generic;
@@ -20,27 +21,9 @@ namespace car_traffic_simulation.engines
             roadRepository = new RoadRepository();
             vehicleRepository = new VehicleRepository();
 
-            edges = new List<EdgeRoad>();
+            GraphXmlParser graphParser = new GraphXmlParser();
 
-            edgePipes = new List<EdgePipe>();
-
-            edgePipes.Add(new EdgePipe(
-                0,
-                new List<EdgeRoad>
-                {
-                    new EdgeRoad(0, 0, 1366, 155, 0, 155),
-                    new EdgeRoad(1, 0, 1366, 205, 0, 205)
-                }
-             ));
-
-            edgePipes.Add(new EdgePipe(
-                1,
-                new List<EdgeRoad>
-                {
-                    new EdgeRoad(2, 1, 0, 270, 1366, 270),
-                    new EdgeRoad(3, 1, 0, 325, 1366, 325)
-                }
-             ));
+            edgePipes = graphParser.LoadAndGet("../../data/Roads.xml");
         }
 
         public void LoadExampleEnvironment()

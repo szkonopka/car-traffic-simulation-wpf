@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<roads>
+    <road>
+        <id>0</id>
+        <type>Straight</type>
+        <laneNumber>2</laneNumber>
+        <pipes>
+            <pipe>
+                <from>South</from>
+                <to>North</to>
+                <laneNumber>2</laneNumber>
+            </pipe>
+            <pipe>
+                <from>North</from>
+                <to>South</to>
+                <laneNumber>2</laneNumber>
+            </pipe>
+        </pipes>
+    <road>
+</roads>
