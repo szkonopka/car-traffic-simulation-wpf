@@ -24,7 +24,7 @@ namespace car_traffic_simulation.spawners
         public VehicleInfo(String imgUrl, string rotation)
         {
             ImgUrl = imgUrl;
-            Console.WriteLine(rotation);
+            
             if (rotation.Equals(ROTATION90))
                 Rotation = Rotation.Rotate90;
             else if (rotation.Equals(ROTATION270))
@@ -48,15 +48,11 @@ namespace car_traffic_simulation.spawners
         private readonly string EDGE_ROAD_ID_ELEM = "edgeRoadId";
         private readonly string ROTATION_ELEM = "rotation";
 
-        VehicleXmlParser parser;
         public int CurrentVehicleIndex { get; set; } = 0;
         public List<Vehicle> Vehicles { get; set; }
 
-        private List<VehicleInfo> vehicleInfos;
-
         public VehicleRepository()
         {
-            parser = new VehicleXmlParser();
             Vehicles = new List<Vehicle>();
         }
 
@@ -68,8 +64,6 @@ namespace car_traffic_simulation.spawners
 
             bitmapImage.UriSource = new Uri("..\\..\\" + @vehicleInfoIndex.ImgUrl, UriKind.Relative);
             bitmapImage.Rotation = vehicleInfoIndex.Rotation;
-            Console.WriteLine(bitmapImage.DecodePixelHeight);
-            Console.WriteLine(bitmapImage.DecodePixelWidth);
             bitmapImage.DecodePixelHeight = height;
             bitmapImage.DecodePixelWidth = width;
 
@@ -78,10 +72,9 @@ namespace car_traffic_simulation.spawners
             return bitmapImage;
         }
 
-        public void GenerateCar(VehicleInfo vehicleInfo, int x, int y, int velocity, int height, int width, EdgeRoad edgeRoad)
+        public void GenerateCar(VehicleInfo vehicleInfo, int id, int x, int y, int velocity, int height, int width, EdgeRoad edgeRoad)
         {
-            var vehicle = new Vehicle(CurrentVehicleIndex, x, y, velocity, height, width, edgeRoad);
-            CurrentVehicleIndex++;
+            var vehicle = new Vehicle(id, x, y, velocity, height, width, edgeRoad);
 
             vehicle.decideAction();
 
@@ -111,37 +104,8 @@ namespace car_traffic_simulation.spawners
                 string texturePath = vehicleNode.Element(TEXTURE_ELEM).Value.ToString();
                 string rotation = vehicleNode.Element(ROTATION_ELEM).Value.ToString();
 
-                GenerateCar(new VehicleInfo(texturePath, rotation), offsetX, offsetY, velocity, height, width, edgePipes[edgePipeId].Edges[edgeRoadId]);
+                GenerateCar(new VehicleInfo(texturePath, rotation), id, offsetX, offsetY, velocity, height, width, edgePipes[edgePipeId].Edges[edgeRoadId]);
             }
         }
-        
-        /*
-        public void LoadExampleVehicleSet(List<EdgePipe> edgePipes)
-        {
-            parser.Load(@"../../data/Vehicles.xml");
-
-            List<VehicleInfo> vehicleInfos = new List<VehicleInfo>
-            {
-                new VehicleInfo("assets/blue-car.png", Rotation.Rotate270),
-                new VehicleInfo("assets/green-car.png", Rotation.Rotate270),
-                new VehicleInfo("assets/green-car.png", Rotation.Rotate270),
-                new VehicleInfo("assets/blue-car.png", Rotation.Rotate270),
-                new VehicleInfo("assets/green-car.png", Rotation.Rotate90),
-                new VehicleInfo("assets/blue-car.png", Rotation.Rotate90),
-                new VehicleInfo("assets/green-car.png", Rotation.Rotate90),
-                new VehicleInfo("assets/blue-car.png", Rotation.Rotate90)
-            };
-
-            GenerateCar(vehicleInfos[0], 0, 0, 3, 35, 70, edgePipes[1].Edges[1]);
-            GenerateCar(vehicleInfos[1], 140, 0, 2, 35, 70, edgePipes[1].Edges[1]);
-            GenerateCar(vehicleInfos[2], 280, 0, 1, 35, 70, edgePipes[1].Edges[1]);
-            GenerateCar(vehicleInfos[3], 0, 0, 1, 35, 70, edgePipes[1].Edges[0]);
-
-            GenerateCar(vehicleInfos[4], 0, 0, 2, 35, 70, edgePipes[0].Edges[0]);
-            GenerateCar(vehicleInfos[5], 0, 0, 3, 35, 70, edgePipes[0].Edges[1]);
-            GenerateCar(vehicleInfos[6], -140, 0, 2, 35, 70, edgePipes[0].Edges[1]);
-            GenerateCar(vehicleInfos[7], -320, 0, 1, 35, 70, edgePipes[0].Edges[1]);
-        }
-        */
     }
 }
