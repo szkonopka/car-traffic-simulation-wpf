@@ -23,17 +23,19 @@ namespace car_traffic_simulation.objects
     public class EdgeRoad
     {
         public int ID { get; set; }
+        public int PipeID { get; set; }
         public Point2D From { get; set; }
         public Point2D To { get; set; }
         public MovementAxis MovementAxis { get; set; }
         public CardinalDirection Direction { get; set; }
 
-        public EdgeRoad(int id, int fromX, int fromY, int toX, int toY)
+        public EdgeRoad(int id, int pipeID, int fromX, int fromY, int toX, int toY)
         {
             if (!IsEdgeParallelToPlane(fromX, fromY, toX, toY))
                 throw new Exception("Edge parameters indicate that it is not parallel to plane!");
 
             ID = id;
+            PipeID = pipeID;
             From = new Point2D(fromX, fromY);
             To = new Point2D(toX, toY);
         }

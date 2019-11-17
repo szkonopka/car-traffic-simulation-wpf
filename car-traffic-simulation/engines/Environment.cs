@@ -13,6 +13,7 @@ namespace car_traffic_simulation.engines
         public RoadRepository roadRepository;
         public VehicleRepository vehicleRepository;
         public List<EdgeRoad> edges { get; set; }
+        public List<EdgePipe> edgePipes { get; set; }
 
         public Environment()
         {
@@ -21,16 +22,31 @@ namespace car_traffic_simulation.engines
 
             edges = new List<EdgeRoad>();
 
-            edges.Add(new EdgeRoad(0, 1366, 155, 0, 155));
-            edges.Add(new EdgeRoad(1, 1366, 205, 0, 205));
-            edges.Add(new EdgeRoad(2, 0, 270, 1366, 270));
-            edges.Add(new EdgeRoad(3, 0, 325, 1366, 325));
+            edgePipes = new List<EdgePipe>();
+
+            edgePipes.Add(new EdgePipe(
+                0,
+                new List<EdgeRoad>
+                {
+                    new EdgeRoad(0, 0, 1366, 155, 0, 155),
+                    new EdgeRoad(1, 0, 1366, 205, 0, 205)
+                }
+             ));
+
+            edgePipes.Add(new EdgePipe(
+                1,
+                new List<EdgeRoad>
+                {
+                    new EdgeRoad(2, 1, 0, 270, 1366, 270),
+                    new EdgeRoad(3, 1, 0, 325, 1366, 325)
+                }
+             ));
         }
 
         public void LoadExampleEnvironment()
         {
             roadRepository.LoadExampleRoadMap();
-            vehicleRepository.LoadExampleVehicleSet(edges);
+            vehicleRepository.LoadExampleVehicleSet(edgePipes);
         }
 
         public void Redraw()

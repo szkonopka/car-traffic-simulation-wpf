@@ -73,6 +73,7 @@
     </ApplicationDefinition>
     <Compile Include="engines\Environment.cs" />
     <Compile Include="engines\EnvironmentEngine.cs" />
+    <Compile Include="objects\EdgePipe.cs" />
     <Compile Include="objects\EdgeRoad.cs" />
     <Compile Include="objects\Graph.cs" />
     <Compile Include="objects\Point2D.cs" />

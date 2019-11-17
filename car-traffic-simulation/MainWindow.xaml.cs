@@ -96,7 +96,7 @@ namespace car_traffic_simulation
             Vehicles.Children.Clear();
             environment.vehicleRepository.Vehicles.Clear();
 
-            environment.vehicleRepository.LoadExampleVehicleSet(environment.edges);
+            environment.vehicleRepository.LoadExampleVehicleSet(environment.edgePipes);
             GenerateVehicles();
 
             engine.Start();

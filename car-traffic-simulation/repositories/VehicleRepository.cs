@@ -92,7 +92,7 @@ namespace car_traffic_simulation.spawners
                     };
         }
 
-        public void LoadExampleVehicleSet(List<EdgeRoad> edges)
+        public void LoadExampleVehicleSet(List<EdgePipe> edgePipes)
         {
             parser.Load(@"../../data/Vehicles.xml");
 
@@ -103,16 +103,20 @@ namespace car_traffic_simulation.spawners
                 new VehicleInfo("assets/green-car.png", Rotation.Rotate270),
                 new VehicleInfo("assets/blue-car.png", Rotation.Rotate270),
                 new VehicleInfo("assets/green-car.png", Rotation.Rotate90),
+                new VehicleInfo("assets/blue-car.png", Rotation.Rotate90),
+                new VehicleInfo("assets/green-car.png", Rotation.Rotate90),
                 new VehicleInfo("assets/blue-car.png", Rotation.Rotate90)
             };
 
-            GenerateCar(vehicleInfos[0], -40, 325, 1, 35, 70, edges[3]);
-            GenerateCar(vehicleInfos[1], -240, 325, 2, 35, 70, edges[3]);
-            GenerateCar(vehicleInfos[2], -1200, 325, 3, 35, 70, edges[3]);
-            GenerateCar(vehicleInfos[3], -1000, 270, 1, 35, 70, edges[2]);
+            GenerateCar(vehicleInfos[0], 0, 325, 3, 35, 70, edgePipes[1].Edges[1]);
+            GenerateCar(vehicleInfos[1], 140, 325, 2, 35, 70, edgePipes[1].Edges[1]);
+            GenerateCar(vehicleInfos[2], 280, 325, 1, 35, 70, edgePipes[1].Edges[1]);
+            GenerateCar(vehicleInfos[3], 0, 270, 1, 35, 70, edgePipes[1].Edges[0]);
 
-            GenerateCar(vehicleInfos[4], 720, 155, 1, 35, 70, edges[0]);
-            GenerateCar(vehicleInfos[5], 1440, 155, 2, 35, 70, edges[1]);
+            GenerateCar(vehicleInfos[4], 0, 155, 2, 35, 70, edgePipes[0].Edges[0]);
+            GenerateCar(vehicleInfos[5], 0, 155, 3, 35, 70, edgePipes[0].Edges[1]);
+            GenerateCar(vehicleInfos[6], -140, 155, 2, 35, 70, edgePipes[0].Edges[1]);
+            GenerateCar(vehicleInfos[7], -320, 155, 1, 35, 70, edgePipes[0].Edges[1]);
         }
     }
 }
