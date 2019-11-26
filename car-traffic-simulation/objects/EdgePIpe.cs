@@ -23,9 +23,9 @@ namespace car_traffic_simulation.objects
             Edges = edges;
         }
 
-        public void AddEdgeRoad(int edgeRoadID, int fromX, int fromY, int toX, int toY)
+        public void AddEdgeRoad(int edgeRoadID, int width, int fromX, int fromY, int toX, int toY)
         {
-            Edges.Add(new EdgeRoad(edgeRoadID, ID, fromX, fromY, toX, toY));
+            Edges.Add(new EdgeRoad(edgeRoadID, ID, width, fromX, fromY, toX, toY));
         }
     }
 }

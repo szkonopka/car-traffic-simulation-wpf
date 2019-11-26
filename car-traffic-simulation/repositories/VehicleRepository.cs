@@ -78,9 +78,19 @@ namespace car_traffic_simulation.spawners
 
             vehicle.decideAction();
 
-            vehicle.image.Source = PrepareCarImage(vehicleInfo, height, width);
-            vehicle.image.Height = height;
-            vehicle.image.Width = width;
+            if (edgeRoad.Direction == CardinalDirection.North || edgeRoad.Direction == CardinalDirection.South)
+            {
+                vehicle.image.Source = PrepareCarImage(vehicleInfo, height, width);
+                vehicle.image.Height = width;
+                vehicle.image.Width = height;
+            }
+            else
+            {
+                vehicle.image.Source = PrepareCarImage(vehicleInfo, height, width);
+                vehicle.image.Height = height;
+                vehicle.image.Width = width;
+            }
+                
 
             Vehicles.Add(vehicle);
         }

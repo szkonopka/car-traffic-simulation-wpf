@@ -39,8 +39,8 @@ namespace car_traffic_simulation.objects
 
         public void RenderBitmap()
         {
-            Canvas.SetTop(image, Position.X);
-            Canvas.SetLeft(image, Position.Y);
+            Canvas.SetTop(image, 0);
+            Canvas.SetLeft(image, 0);
         }
     }
 }
