@@ -90,18 +90,18 @@
       <edgeRoads>
         <edgeRoad>
           <id>8</id>
-          <fromX>0</fromX>
-          <fromY>850</fromY>
-          <toX>1366</toX>
-          <toY>850</toY>
+          <fromX>1900</fromX>
+          <fromY>735</fromY>
+          <toX>1600</toX>
+          <toY>735</toY>
           <width>50</width>
         </edgeRoad>
         <edgeRoad>
           <id>9</id>
-          <fromX>0</fromX>
-          <fromY>900</fromY>
-          <toX>1366</toX>
-          <toY>900</toY>
+          <fromX>1900</fromX>
+          <fromY>785</fromY>
+          <toX>1600</toX>
+          <toY>785</toY>
           <width>50</width>
         </edgeRoad>
       </edgeRoads>
@@ -111,17 +111,17 @@
       <edgeRoads>
         <edgeRoad>
           <id>10</id>
-          <fromX>0</fromX>
+          <fromX>1600</fromX>
           <fromY>850</fromY>
-          <toX>1366</toX>
+          <toX>1900</toX>
           <toY>850</toY>
           <width>50</width>
         </edgeRoad>
         <edgeRoad>
           <id>11</id>
-          <fromX>0</fromX>
+          <fromX>1600</fromX>
           <fromY>900</fromY>
-          <toX>1366</toX>
+          <toX>1900</toX>
           <toY>900</toY>
           <width>50</width>
         </edgeRoad>

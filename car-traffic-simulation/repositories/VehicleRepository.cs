@@ -16,7 +16,7 @@ namespace car_traffic_simulation.spawners
 {
     public class VehicleInfo
     {
-        private readonly string ROTATION90 = "90", ROTATION270 = "270";
+        private readonly string ROTATION90 = "90", ROTATION270 = "270", ROTATION180 = "180";
 
         public String ImgUrl { get; set; }
         public Rotation Rotation { get; set; }
@@ -29,6 +29,8 @@ namespace car_traffic_simulation.spawners
                 Rotation = Rotation.Rotate90;
             else if (rotation.Equals(ROTATION270))
                 Rotation = Rotation.Rotate270;
+            else if (rotation.Equals(ROTATION180))
+                Rotation = Rotation.Rotate180;
             else
                 Rotation = Rotation.Rotate0;
         }

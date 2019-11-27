@@ -100,18 +100,16 @@ namespace car_traffic_simulation.objects
 
             foreach (var vehicle in environment.vehicleRepository.Vehicles)
             {
-                /*
-                if (!restEdges.Where(re => re.ID == vehicle.CurrentEdge.ID).Any())
+                if (!restEdges.Where(re => re.PipeID == vehicle.CurrentEdge.PipeID).Any())
                 {
                     continue;
                 }
-                */
 
-                if (NewPositionY < Position.Y)
+                if ((CurrentEdge.Direction == CardinalDirection.East || CurrentEdge.Direction == CardinalDirection.West) && NewPositionY < Position.Y)
                 {
                     Position.Y -= 1;
                 }
-                else if (NewPositionY > Position.Y)
+                else if ((CurrentEdge.Direction == CardinalDirection.East || CurrentEdge.Direction == CardinalDirection.West) && NewPositionY > Position.Y)
                 {
                     Position.Y += 1;
                 }
