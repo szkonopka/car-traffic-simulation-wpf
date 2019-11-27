@@ -149,6 +149,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="data\Roads.xml" />
+    <Resource Include="data\Vehicles-org.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="data\Intersections.xml" />
+  </ItemGroup>
+  <ItemGroup>
     <Resource Include="data\Vehicles.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

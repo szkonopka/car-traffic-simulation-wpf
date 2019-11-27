@@ -32,7 +32,8 @@ namespace car_traffic_simulation.spawners
 
         public void LoadExampleRoadMap()
         {
-            var road = new Road("", 1366, 241, 0, 138);
+            //var road = new Road("", 1366, 241, 0, 138);
+            var road = new Road("", 1866, 941, 0, 0);
 
             road.image.Source = new BitmapImage(new Uri("..\\..\\" + @"assets/straight-road.png", UriKind.Relative));
 

@@ -19,6 +19,7 @@ namespace car_traffic_simulation.parsers
         private readonly string FROM_Y_ELEM = "fromY";
         private readonly string TO_X_ELEM = "toX";
         private readonly string TO_Y_ELEM = "toY";
+        private readonly string WIDTH_ELEM = "width";
 
         public GraphXmlParser()
         {
@@ -43,18 +44,19 @@ namespace car_traffic_simulation.parsers
                 {
                     int edgeRoadId = Int32.Parse(edgeRoadNode.Element(ID_ELEM).Value);
 
-                    AddEdgeRoad(edgePipeId, edgeRoadId, Int32.Parse(edgeRoadNode.Element(FROM_X_ELEM).Value),
+                    AddEdgeRoad(edgePipeId, edgeRoadId,
+                        Int32.Parse(edgeRoadNode.Element(WIDTH_ELEM).Value), Int32.Parse(edgeRoadNode.Element(FROM_X_ELEM).Value),
                         Int32.Parse(edgeRoadNode.Element(FROM_Y_ELEM).Value), Int32.Parse(edgeRoadNode.Element(TO_X_ELEM).Value), Int32.Parse(edgeRoadNode.Element(TO_Y_ELEM).Value));
                 }
             }
         }
 
-        private void AddEdgeRoad(int edgePipeID, int edgeRoadID, int fromX, int fromY, int toX, int toY)
+        private void AddEdgeRoad(int edgePipeID, int edgeRoadID, int width, int fromX, int fromY, int toX, int toY)
         {
             if (edgePipeList.ElementAt(edgePipeID) == null)
                 return;
 
-            edgePipeList[edgePipeID].AddEdgeRoad(edgeRoadID, fromX, fromY, toX, toY);
+            edgePipeList[edgePipeID].AddEdgeRoad(edgeRoadID, width, fromX, fromY, toX, toY);
         }
 
         private void AddEdgePipe(int id)

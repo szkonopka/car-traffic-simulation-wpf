@@ -18,7 +18,8 @@ namespace car_traffic_simulation.objects
     public class Vehicle
     {
         public Image image;
-        protected int MovementVetor;
+        protected int MovementVetorX;
+        protected int MovementVetorY;
         public Action CurrentAction { get; set; }
         public int ID { get; set; }
         public Point2D Position { get; set; }
@@ -47,14 +48,16 @@ namespace car_traffic_simulation.objects
             Height = height;
             Width = width;
 
-            MovementVetor = 0;
+            MovementVetorX = 0;
+            MovementVetorY = 0;
+
             image = new Image();
         }
 
         public virtual void Draw()
         {
-            Canvas.SetLeft(image, Position.X);
-            Canvas.SetTop(image, Position.Y);
+            Canvas.SetLeft(image, calculatePivotX());
+            Canvas.SetTop(image, calculatePivotY());
         }
 
         public virtual void Draw(Action action) { }
@@ -64,14 +67,16 @@ namespace car_traffic_simulation.objects
             switch (CurrentEdge.Direction)
             {
                 case CardinalDirection.East:
-                    MovementVetor = Velocity;
+                    MovementVetorX = Velocity;
                     break;
                 case CardinalDirection.West:
-                    MovementVetor = 0 - Velocity;
+                    MovementVetorX = 0 - Velocity;
                     break;
                 case CardinalDirection.North:
+                    MovementVetorY = Velocity;
                     break;
                 case CardinalDirection.South:
+                    MovementVetorY = 0 - Velocity;
                     break;
             }
         }
@@ -88,19 +93,43 @@ namespace car_traffic_simulation.objects
 
         public void act(car_traffic_simulation.engines.Environment environment)
         {
-            int CalculatedMovementVectorX = MovementVetor;
+            int CalculatedMovementVectorX = MovementVetorX;
+            //int CalculatedMovementVectorY = MovementVetor;
 
             var restEdges = environment.edgePipes.Where(e => e.ID == CurrentEdge.PipeID).FirstOrDefault().Edges.Where(e => e.ID != CurrentEdge.ID);
 
             foreach (var vehicle in environment.vehicleRepository.Vehicles)
             {
-                if (NewPositionY < Position.Y)
+                if (!restEdges.Where(re => re.PipeID == vehicle.CurrentEdge.PipeID).Any())
+                {
+                    continue;
+                }
+
+                if ((CurrentEdge.Direction == CardinalDirection.East || CurrentEdge.Direction == CardinalDirection.West) && NewPositionY < Position.Y)
                 {
                     Position.Y -= 1;
                 }
-                else if (NewPositionY > Position.Y)
+                else if ((CurrentEdge.Direction == CardinalDirection.East || CurrentEdge.Direction == CardinalDirection.West) && NewPositionY > Position.Y)
                 {
                     Position.Y += 1;
+                }
+
+                if ((CurrentEdge.Direction == CardinalDirection.East && CurrentEdge.To.X <= calculatePivotX()) || 
+                    (CurrentEdge.Direction == CardinalDirection.West && CurrentEdge.To.X >= calculatePivotX()))
+                {
+                    Velocity = 0;
+                    if (vehicle.CurrentEdge.ID == CurrentEdge.ID && isVehicleInFront(vehicle) && isVehicleNCarWidthInFrontAtLeast(2, vehicle))
+                        Velocity = vehicle.Velocity;
+                    continue;
+                }
+
+                if ((CurrentEdge.Direction == CardinalDirection.North && CurrentEdge.To.Y <= calculatePivotY()) ||
+                    (CurrentEdge.Direction == CardinalDirection.South && CurrentEdge.To.Y >= calculatePivotY()))
+                {
+                    Velocity = 0;
+                    if (vehicle.CurrentEdge.ID == CurrentEdge.ID && isVehicleInFront(vehicle) && isVehicleNCarWidthInFrontAtLeast(2, vehicle))
+                        Velocity = vehicle.Velocity;
+                    continue;
                 }
 
                 if (vehicle.ID == ID)
@@ -140,37 +169,11 @@ namespace car_traffic_simulation.objects
                     }
                 }
             }
-    
-            // int CalculatedMovementVectorY = 0;
-
-            /*
-            foreach (var vehicle in environment.vehicleRepository.Vehicles)
-            {
-                if (doesVehicleMoveToTheSameDirection(vehicle) && isVehicleInFront(vehicle) && isVehicleNCarWidthInFrontAtLeast(2, vehicle))
-                {
-                    if (isLeftLaneFreeForOutrun(environment))
-                    {
-                        if (outrun(ref CalculatedMovementVectorX, ref CalculatedMovementVectorY, vehicle))
-                        {
-                            Velocity = 0;
-                        }
-                        else
-                        {
-                            Velocity = vehicle.Velocity + 1;
-                        }                        
-                    }
-                    else if (calculatePivotY() == vehicle.calculatePivotY())
-                    {
-                        Velocity = vehicle.Velocity;
-                    }
-                }
-            }
-            */
-
+ 
             decideAction();
 
-            Position.X += MovementVetor;
-            //Position.Y += CalculatedMovementVectorY;
+            Position.X += MovementVetorX;
+            Position.Y += MovementVetorY;
         }
 
         private bool isNextLaneFreeForOutrun(EdgeRoad closestEdge, List<Vehicle> vehicles)
