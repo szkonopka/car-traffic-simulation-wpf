@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace car_traffic_simulation.objects
@@ -30,6 +31,9 @@ namespace car_traffic_simulation.objects
         public string TexturePath { get; set; }
         public EdgeRoad CurrentEdge { get; set; }
         public int NewPositionY { get; set; }
+        public int PivotX { get; set; }
+        public int PivotY { get; set; }
+        private bool stop = false;
 
         public Vehicle(int id, int offSetX, int offSetY, int velocity, int height, int width, EdgeRoad currentEdge)
         {
@@ -40,6 +44,26 @@ namespace car_traffic_simulation.objects
 
             Position.X += offSetX;
             Position.Y += offSetY;
+
+            switch (currentEdge.Direction)
+            {
+                case CardinalDirection.East:
+                    PivotX = Position.X;
+                    PivotY = Position.Y;
+                    break;
+                case CardinalDirection.West:
+                    PivotX = Position.X;
+                    PivotY = Position.Y;
+                    break;
+                case CardinalDirection.North:
+                    PivotX = Position.X;
+                    PivotY = Position.Y;
+                    break;
+                case CardinalDirection.South:
+                    PivotX = Position.X;
+                    PivotY = Position.Y;
+                    break;
+            }
 
             NewPositionY = Position.Y;
 
@@ -56,8 +80,10 @@ namespace car_traffic_simulation.objects
 
         public virtual void Draw()
         {
-            Canvas.SetLeft(image, calculatePivotX());
-            Canvas.SetTop(image, calculatePivotY());
+            Canvas.SetLeft(image, calculateStartDrawPointX());
+            Canvas.SetTop(image, calculateStartDrawPointY());
+            //Canvas.SetLeft(image, Position.X);
+            //Canvas.SetTop(image, Position.Y);
         }
 
         public virtual void Draw(Action action) { }
@@ -81,18 +107,51 @@ namespace car_traffic_simulation.objects
             }
         }
 
-        public int calculatePivotX()
+        public int calculateStartDrawPointX()
         {
-            return Position.X + Width / 2;
+            //return Position.X + Width / 2;
+
+            switch (CurrentEdge.Direction)
+            {
+                case CardinalDirection.East:
+                case CardinalDirection.West:
+                    return Position.X - Width / 2;
+                case CardinalDirection.North:
+                case CardinalDirection.South:
+                    return Position.X - Height / 2;
+                default:
+                    return Position.X;
+            }
         }
 
-        public int calculatePivotY()
+        public int calculateStartDrawPointY()
         {
-            return Position.Y - Height / 2;
+            //return Position.Y - Height / 2;
+
+            switch (CurrentEdge.Direction)
+            {
+                case CardinalDirection.East:
+                case CardinalDirection.West:
+                    return Position.Y - Height / 2;
+                case CardinalDirection.North:
+                case CardinalDirection.South:
+                    return Position.Y - Width / 2;
+                default:
+                    return Position.Y;
+            }
         }
 
         public void act(car_traffic_simulation.engines.Environment environment)
         {
+            if (stop)
+            {
+                var currentIntersection = environment.intersections.FirstOrDefault(i => i.roads.Any(r => r.ID == CurrentEdge.ID));
+                Console.WriteLine("Liczba skrzyzowan " + environment.intersections.Count());
+                Console.WriteLine("Oczekiwanie na zwolnienie skrzyzowania " + currentIntersection.ID);
+
+                return;
+            }
+
             int CalculatedMovementVectorX = MovementVetorX;
             //int CalculatedMovementVectorY = MovementVetor;
 
@@ -114,19 +173,22 @@ namespace car_traffic_simulation.objects
                     Position.Y += 1;
                 }
 
-                if ((CurrentEdge.Direction == CardinalDirection.East && CurrentEdge.To.X <= calculatePivotX()) || 
-                    (CurrentEdge.Direction == CardinalDirection.West && CurrentEdge.To.X >= calculatePivotX()))
+                if ((CurrentEdge.Direction == CardinalDirection.East && CurrentEdge.To.X <= calculateStartDrawPointX() + Width) || 
+                    (CurrentEdge.Direction == CardinalDirection.West && CurrentEdge.To.X >= calculateStartDrawPointX()))
                 {
+
                     Velocity = 0;
+                    stop = true;
                     if (vehicle.CurrentEdge.ID == CurrentEdge.ID && isVehicleInFront(vehicle) && isVehicleNCarWidthInFrontAtLeast(2, vehicle))
                         Velocity = vehicle.Velocity;
                     continue;
                 }
 
-                if ((CurrentEdge.Direction == CardinalDirection.North && CurrentEdge.To.Y <= calculatePivotY()) ||
-                    (CurrentEdge.Direction == CardinalDirection.South && CurrentEdge.To.Y >= calculatePivotY()))
+                if ((CurrentEdge.Direction == CardinalDirection.North && CurrentEdge.To.Y <= calculateStartDrawPointY() + Width) ||
+                    (CurrentEdge.Direction == CardinalDirection.South && CurrentEdge.To.Y >= calculateStartDrawPointY()))
                 {
                     Velocity = 0;
+                    stop = true;
                     if (vehicle.CurrentEdge.ID == CurrentEdge.ID && isVehicleInFront(vehicle) && isVehicleNCarWidthInFrontAtLeast(2, vehicle))
                         Velocity = vehicle.Velocity;
                     continue;
@@ -211,7 +273,7 @@ namespace car_traffic_simulation.objects
 
         private bool doesVehicleMoveToTheSameDirection(Vehicle vehicle)
         {
-            return vehicle.calculatePivotY() + 20 + vehicle.Height >= calculatePivotY() && calculatePivotY() >= vehicle.calculatePivotY() - 20 - vehicle.Height;
+            return vehicle.calculateStartDrawPointY() + 20 + vehicle.Height >= calculateStartDrawPointY() && calculateStartDrawPointY() >= vehicle.calculateStartDrawPointY() - 20 - vehicle.Height;
         }
 
         private bool isVehicleInFront(Vehicle vehicle)
@@ -219,9 +281,9 @@ namespace car_traffic_simulation.objects
             switch (CurrentEdge.Direction)
             {
                 case CardinalDirection.East:
-                    return vehicle.calculatePivotX() > calculatePivotX();
+                    return vehicle.calculateStartDrawPointX() > calculateStartDrawPointX();
                 case CardinalDirection.West:
-                    return vehicle.calculatePivotX() < calculatePivotX();
+                    return vehicle.calculateStartDrawPointX() < calculateStartDrawPointX();
                 default:
                     return false;
             }
@@ -229,7 +291,7 @@ namespace car_traffic_simulation.objects
 
         private bool isVehicleNCarWidthInFrontAtLeast(int nCarWidth, Vehicle vehicle)
         {
-            return Math.Abs(vehicle.calculatePivotX() - calculatePivotX()) < 2 * Width;
+            return Math.Abs(vehicle.calculateStartDrawPointX() - calculateStartDrawPointX()) < 2 * Width;
         }
 
         private bool isLeftLaneFreeForOutrun(car_traffic_simulation.engines.Environment environment)

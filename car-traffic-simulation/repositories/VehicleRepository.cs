@@ -20,7 +20,6 @@ namespace car_traffic_simulation.spawners
 
         public String ImgUrl { get; set; }
         public Rotation Rotation { get; set; }
-
         public VehicleInfo(String imgUrl, string rotation)
         {
             ImgUrl = imgUrl;

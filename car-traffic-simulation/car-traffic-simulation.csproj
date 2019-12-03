@@ -51,8 +51,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -75,10 +77,12 @@
     <Compile Include="engines\EnvironmentEngine.cs" />
     <Compile Include="objects\EdgePipe.cs" />
     <Compile Include="objects\EdgeRoad.cs" />
+    <Compile Include="objects\Intersection.cs" />
     <Compile Include="objects\Point2D.cs" />
     <Compile Include="objects\Road.cs" />
     <Compile Include="objects\Verticle.cs" />
     <Compile Include="parsers\GraphXmlParser.cs" />
+    <Compile Include="repositories\IntersectionRepository.cs" />
     <Compile Include="repositories\RoadRepository.cs" />
     <Compile Include="repositories\VehicleRepository.cs" />
     <Page Include="MainWindow.xaml">
