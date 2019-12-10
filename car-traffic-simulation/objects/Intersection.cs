@@ -70,7 +70,7 @@ namespace car_traffic_simulation.objects
                     Console.WriteLine("CurrentEdge X: " + vehicle.CurrentEdge.From.X + " Y: " + vehicle.CurrentEdge.From.Y);
                     vehicle.Position.X = vehicle.CurrentEdge.From.X;
                     vehicle.Position.Y = vehicle.CurrentEdge.From.Y;
-                    
+                    vehicle.NewPositionY = vehicle.Position.Y;
                     //vehicle.NextEdge = null;
                     vehicle.State = State.Move;
 

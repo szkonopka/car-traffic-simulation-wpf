@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 
 namespace car_traffic_simulation.objects
 {
@@ -169,7 +170,7 @@ namespace car_traffic_simulation.objects
                     State = State.ReadyToLeaveIntersection;
                     Velocity = OldVelocity;
                     Console.WriteLine("Zwalniam auto " + ID);
-
+                    rotateImage();
                     return;
                 }
                 else if (NextEdge.From.X < Position.X)
@@ -381,6 +382,21 @@ namespace car_traffic_simulation.objects
         private bool doesVectorIntrudeOnVector(int firstVecFirstX, int firstVecSecX, int secVecFirstX, int secVecSecX)
         {
             return !((secVecSecX < firstVecFirstX - Width/2) || (secVecFirstX > firstVecSecX + Width/2));
+        }
+
+        private void rotateImage()
+        {
+            //BitmapImage bitmapImage = new BitmapImage(image.Source);
+
+            image.BeginInit();
+
+            //image.Source. = Rotation.Rotate90;
+            //bitmapImage.DecodePixelHeight = height;
+            //bitmapImage.DecodePixelWidth = width;
+
+            image.EndInit();
+
+            //image.Source = bitmapImage;
         }
     }
 }
