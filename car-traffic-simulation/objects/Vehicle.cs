@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 
 namespace car_traffic_simulation.objects
 {
@@ -13,6 +15,14 @@ namespace car_traffic_simulation.objects
         MoveBackward,
         TurnRight,
         TurnLeft
+    };
+
+    public enum State
+    {
+        InIntersectionQueue,
+        OnIntersection,
+        ReadyToLeaveIntersection,
+        Move
     };
 
     public class Vehicle
@@ -29,7 +39,15 @@ namespace car_traffic_simulation.objects
         public int OldVelocity { get; set; }
         public string TexturePath { get; set; }
         public EdgeRoad CurrentEdge { get; set; }
+        public EdgeRoad NextEdge { get; set; } = null;
         public int NewPositionY { get; set; }
+        public int PivotX { get; set; }
+        public int PivotY { get; set; }
+        private bool stop = false;
+        private bool OnIntersection = false;
+        public State State { get; set; }
+        public int CurrentConnectorX { get; set; }
+        public int CurrentConnectorY { get; set; }
 
         public Vehicle(int id, int offSetX, int offSetY, int velocity, int height, int width, EdgeRoad currentEdge)
         {
@@ -41,12 +59,33 @@ namespace car_traffic_simulation.objects
             Position.X += offSetX;
             Position.Y += offSetY;
 
+            switch (currentEdge.Direction)
+            {
+                case CardinalDirection.East:
+                    PivotX = Position.X;
+                    PivotY = Position.Y;
+                    break;
+                case CardinalDirection.West:
+                    PivotX = Position.X;
+                    PivotY = Position.Y;
+                    break;
+                case CardinalDirection.North:
+                    PivotX = Position.X;
+                    PivotY = Position.Y;
+                    break;
+                case CardinalDirection.South:
+                    PivotX = Position.X;
+                    PivotY = Position.Y;
+                    break;
+            }
+
             NewPositionY = Position.Y;
 
             Velocity = velocity;
             OldVelocity = Velocity;
             Height = height;
             Width = width;
+            State = State.Move;
 
             MovementVetorX = 0;
             MovementVetorY = 0;
@@ -56,8 +95,10 @@ namespace car_traffic_simulation.objects
 
         public virtual void Draw()
         {
-            Canvas.SetLeft(image, calculatePivotX());
-            Canvas.SetTop(image, calculatePivotY());
+            Canvas.SetLeft(image, calculateStartDrawPointX());
+            Canvas.SetTop(image, calculateStartDrawPointY());
+            //Canvas.SetLeft(image, Position.X);
+            //Canvas.SetTop(image, Position.Y);
         }
 
         public virtual void Draw(Action action) { }
@@ -81,25 +122,87 @@ namespace car_traffic_simulation.objects
             }
         }
 
-        public int calculatePivotX()
+        public int calculateStartDrawPointX()
         {
-            return Position.X + Width / 2;
+            //return Position.X + Width / 2;
+
+            switch (CurrentEdge.Direction)
+            {
+                case CardinalDirection.East:
+                case CardinalDirection.West:
+                    return Position.X - Width / 2;
+                case CardinalDirection.North:
+                case CardinalDirection.South:
+                    return Position.X - Height / 2;
+                default:
+                    return Position.X;
+            }
         }
 
-        public int calculatePivotY()
+        public int calculateStartDrawPointY()
         {
-            return Position.Y - Height / 2;
+            //return Position.Y - Height / 2;
+
+            switch (CurrentEdge.Direction)
+            {
+                case CardinalDirection.East:
+                case CardinalDirection.West:
+                    return Position.Y - Height / 2;
+                case CardinalDirection.North:
+                case CardinalDirection.South:
+                    return Position.Y - Width / 2;
+                default:
+                    return Position.Y;
+            }
         }
 
         public void act(car_traffic_simulation.engines.Environment environment)
         {
+            MovementVetorX = 0;
+            MovementVetorY = 0;
+
+            if (NextEdge != null && State == State.OnIntersection)
+            {
+                Velocity = 1;
+
+                if (NextEdge.From.Y == Position.Y && NextEdge.From.X == Position.X)
+                {
+                    State = State.ReadyToLeaveIntersection;
+                    Velocity = OldVelocity;
+                    Console.WriteLine("Zwalniam auto " + ID);
+                    rotateImage();
+                    return;
+                }
+                else if (NextEdge.From.X < Position.X)
+                {
+                    Position.X += 0 - Velocity;
+                }
+                else if (NextEdge.From.X > Position.X)
+                {
+                    Position.X += Velocity;
+                }
+                else if (NextEdge.From.Y < Position.Y)
+                {
+                    Position.Y += 0 - Velocity;
+                }
+                else if (NextEdge.From.Y > Position.Y)
+                {
+                    Position.Y += Velocity;
+                }
+
+                return;
+            }
+
             int CalculatedMovementVectorX = MovementVetorX;
-            //int CalculatedMovementVectorY = MovementVetor;
+            int CalculatedMovementVectorY = MovementVetorY;
 
             var restEdges = environment.edgePipes.Where(e => e.ID == CurrentEdge.PipeID).FirstOrDefault().Edges.Where(e => e.ID != CurrentEdge.ID);
 
             foreach (var vehicle in environment.vehicleRepository.Vehicles)
             {
+                if (State == State.InIntersectionQueue)
+                    continue;
+
                 if (!restEdges.Where(re => re.PipeID == vehicle.CurrentEdge.PipeID).Any())
                 {
                     continue;
@@ -107,31 +210,54 @@ namespace car_traffic_simulation.objects
 
                 if ((CurrentEdge.Direction == CardinalDirection.East || CurrentEdge.Direction == CardinalDirection.West) && NewPositionY < Position.Y)
                 {
+                    Console.WriteLine("NAPIERDALAM ---");
                     Position.Y -= 1;
                 }
                 else if ((CurrentEdge.Direction == CardinalDirection.East || CurrentEdge.Direction == CardinalDirection.West) && NewPositionY > Position.Y)
                 {
+                    Console.WriteLine("NAPIERDALAM +++");
                     Position.Y += 1;
                 }
 
-                if ((CurrentEdge.Direction == CardinalDirection.East && CurrentEdge.To.X <= calculatePivotX()) || 
-                    (CurrentEdge.Direction == CardinalDirection.West && CurrentEdge.To.X >= calculatePivotX()))
+                bool isOnIntersection = false;
+
+                switch (CurrentEdge.Direction)
                 {
-                    Velocity = 0;
-                    if (vehicle.CurrentEdge.ID == CurrentEdge.ID && isVehicleInFront(vehicle) && isVehicleNCarWidthInFrontAtLeast(2, vehicle))
-                        Velocity = vehicle.Velocity;
-                    continue;
+                    case CardinalDirection.East:
+                        CurrentConnectorY = Position.Y;
+                        CurrentConnectorX = calculateStartDrawPointX() + Width;
+                        isOnIntersection = CurrentEdge.To.X <= CurrentConnectorX;
+                        CurrentConnectorX++;
+                        break;
+                    case CardinalDirection.West:
+                        CurrentConnectorY = Position.Y;
+                        CurrentConnectorX = calculateStartDrawPointX();
+                        isOnIntersection = CurrentEdge.To.X >= CurrentConnectorX;
+                        break;
+                    case CardinalDirection.North:
+                        CurrentConnectorX = Position.X;
+                        CurrentConnectorY = calculateStartDrawPointY() + Width;
+                        isOnIntersection = CurrentEdge.To.Y <= CurrentConnectorY;
+                        break;
+                    case CardinalDirection.South:
+                        CurrentConnectorX = Position.X;
+                        CurrentConnectorY = calculateStartDrawPointY();
+                        isOnIntersection = CurrentEdge.To.Y >= CurrentConnectorY;
+                        break;
                 }
 
-                if ((CurrentEdge.Direction == CardinalDirection.North && CurrentEdge.To.Y <= calculatePivotY()) ||
-                    (CurrentEdge.Direction == CardinalDirection.South && CurrentEdge.To.Y >= calculatePivotY()))
-                {
-                    Velocity = 0;
-                    if (vehicle.CurrentEdge.ID == CurrentEdge.ID && isVehicleInFront(vehicle) && isVehicleNCarWidthInFrontAtLeast(2, vehicle))
-                        Velocity = vehicle.Velocity;
-                    continue;
-                }
+                CurrentConnectorY = CurrentEdge.To.Y;
+                CurrentConnectorX = CurrentEdge.To.X;
 
+                if (isOnIntersection)
+                {
+                    OldVelocity = Velocity;
+                    Velocity = 0;
+                    State = State.InIntersectionQueue;
+                    
+                    continue;
+                }        
+                
                 if (vehicle.ID == ID)
                     continue;
 
@@ -172,6 +298,10 @@ namespace car_traffic_simulation.objects
  
             decideAction();
 
+            Console.WriteLine(ID + ": MovementVectorY: " + MovementVetorY);
+            Console.WriteLine(ID + ": PositionY: " + Position.Y);
+            Console.WriteLine(ID + ": NewPositionY: " + NewPositionY);
+
             Position.X += MovementVetorX;
             Position.Y += MovementVetorY;
         }
@@ -211,7 +341,7 @@ namespace car_traffic_simulation.objects
 
         private bool doesVehicleMoveToTheSameDirection(Vehicle vehicle)
         {
-            return vehicle.calculatePivotY() + 20 + vehicle.Height >= calculatePivotY() && calculatePivotY() >= vehicle.calculatePivotY() - 20 - vehicle.Height;
+            return vehicle.calculateStartDrawPointY() + 20 + vehicle.Height >= calculateStartDrawPointY() && calculateStartDrawPointY() >= vehicle.calculateStartDrawPointY() - 20 - vehicle.Height;
         }
 
         private bool isVehicleInFront(Vehicle vehicle)
@@ -219,9 +349,9 @@ namespace car_traffic_simulation.objects
             switch (CurrentEdge.Direction)
             {
                 case CardinalDirection.East:
-                    return vehicle.calculatePivotX() > calculatePivotX();
+                    return vehicle.calculateStartDrawPointX() > calculateStartDrawPointX();
                 case CardinalDirection.West:
-                    return vehicle.calculatePivotX() < calculatePivotX();
+                    return vehicle.calculateStartDrawPointX() < calculateStartDrawPointX();
                 default:
                     return false;
             }
@@ -229,7 +359,7 @@ namespace car_traffic_simulation.objects
 
         private bool isVehicleNCarWidthInFrontAtLeast(int nCarWidth, Vehicle vehicle)
         {
-            return Math.Abs(vehicle.calculatePivotX() - calculatePivotX()) < 2 * Width;
+            return Math.Abs(vehicle.calculateStartDrawPointX() - calculateStartDrawPointX()) < 2 * Width;
         }
 
         private bool isLeftLaneFreeForOutrun(car_traffic_simulation.engines.Environment environment)
@@ -252,6 +382,21 @@ namespace car_traffic_simulation.objects
         private bool doesVectorIntrudeOnVector(int firstVecFirstX, int firstVecSecX, int secVecFirstX, int secVecSecX)
         {
             return !((secVecSecX < firstVecFirstX - Width/2) || (secVecFirstX > firstVecSecX + Width/2));
+        }
+
+        private void rotateImage()
+        {
+            //BitmapImage bitmapImage = new BitmapImage(image.Source);
+
+            image.BeginInit();
+
+            //image.Source. = Rotation.Rotate90;
+            //bitmapImage.DecodePixelHeight = height;
+            //bitmapImage.DecodePixelWidth = width;
+
+            image.EndInit();
+
+            //image.Source = bitmapImage;
         }
     }
 }

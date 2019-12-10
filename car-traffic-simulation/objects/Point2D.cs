@@ -22,5 +22,20 @@ namespace car_traffic_simulation.objects
             X = point2D.X;
             Y = point2D.Y;
         }
+
+        public static bool operator !=(Point2D pointA, Point2D pointB)
+        {
+            return !(pointA.X == pointB.X && pointA.Y == pointB.Y);
+        }
+
+        public static bool operator ==(Point2D pointA, Point2D pointB)
+        {
+            return (pointA.X == pointB.X && pointA.Y == pointB.Y);
+        }
+
+        public string toString()
+        {
+            return "X: " + X + ", Y: " + Y;
+        }
     }
 }

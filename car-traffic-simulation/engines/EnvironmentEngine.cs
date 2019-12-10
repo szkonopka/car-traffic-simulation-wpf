@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Threading;
 
 namespace car_traffic_simulation.engines
@@ -26,6 +28,11 @@ namespace car_traffic_simulation.engines
 
         private void Render(object sender, EventArgs e)
         {
+            foreach (var intersection in state.intersections)
+            {
+                intersection.act(state);
+            }
+
             foreach (var vehicle in state.vehicleRepository.Vehicles)
             {
                 vehicle.act(state);

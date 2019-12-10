@@ -40,6 +40,8 @@ namespace car_traffic_simulation
 
         Environment environment;
         EnvironmentEngine engine;
+        DispatcherTimer timer = new DispatcherTimer();
+        Dictionary<int, Rectangle> rectangles = new Dictionary<int, Rectangle>();
 
         public MainWindow()
         {   
@@ -56,6 +58,19 @@ namespace car_traffic_simulation
             GenerateVehicles();
 
             engine.Start();
+
+            timer.Tick += Render;
+            timer.Interval = new TimeSpan(0, 0, 0, 0, 10);
+            timer.Start();
+        }
+
+        public void Render(object sender, EventArgs e)
+        {
+            foreach (var vehicle in environment.vehicleRepository.Vehicles)
+            {
+                Canvas.SetTop(rectangles[vehicle.ID], vehicle.Position.Y);
+                Canvas.SetLeft(rectangles[vehicle.ID], vehicle.Position.X);
+            }            
         }
 
         public void GenerateRoads()
@@ -73,10 +88,24 @@ namespace car_traffic_simulation
         {
             foreach (var vehicle in environment.vehicleRepository.Vehicles)
             {
+                var myRect = new Rectangle
+                {
+                    Stroke = Brushes.White,
+                    StrokeThickness = 2
+                };
+                myRect.Height = 5;
+                myRect.Width = 5;
+
+                rectangles.Add(key: vehicle.ID, value: myRect);
+
                 Canvas.SetTop(vehicle.image, vehicle.Position.Y);
                 Canvas.SetLeft(vehicle.image, vehicle.Position.X);
 
+                Canvas.SetTop(rectangles[vehicle.ID], vehicle.Position.Y);
+                Canvas.SetLeft(rectangles[vehicle.ID], vehicle.Position.X);
+
                 Vehicles.Children.Add(vehicle.image);
+                Vehicles.Children.Add(myRect);
             }
         }
 
@@ -96,6 +125,7 @@ namespace car_traffic_simulation
 
             Vehicles.Children.Clear();
             environment.vehicleRepository.Vehicles.Clear();
+            rectangles.Clear();
 
             environment.vehicleRepository.LoadFromXml("../../data/Vehicles.xml", environment.edgePipes);
             GenerateVehicles();
