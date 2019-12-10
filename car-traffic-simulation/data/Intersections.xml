@@ -13,35 +13,35 @@
       </pipe>
       <pipe>
         <id>4</id>
-        <type>out</type>
+        <type>in</type>
       </pipe>
       <pipe>
         <id>5</id>
-        <type>out</type>
+        <type>in</type>
       </pipe>
       <pipe>
         <id>8</id>
-        <type>out</type>
+        <type>in</type>
       </pipe>
       <pipe>
         <id>9</id>
-        <type>out</type>
+        <type>in</type>
       </pipe>
       <pipe>
         <id>6</id>
-        <type>in</type>
+        <type>out</type>
       </pipe>
       <pipe>
         <id>7</id>
-        <type>in</type>
+        <type>out</type>
       </pipe>
       <pipe>
         <id>10</id>
-        <type>in</type>
+        <type>out</type>
       </pipe>
       <pipe>
         <id>11</id>
-        <type>in</type>
+        <type>out</type>
       </pipe>
       <pipe>
         <id>2</id>

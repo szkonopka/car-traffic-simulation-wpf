@@ -8,12 +8,6 @@ using System.Xml.Linq;
 
 namespace car_traffic_simulation.repositories
 {
-    public enum IntersectionPipeType
-    {
-        Out,
-        In
-    }
-
     public class IntersectionRepository
     {
         private readonly string INTERSECTIONS_ELEM = "intersection";
@@ -26,6 +20,14 @@ namespace car_traffic_simulation.repositories
         public IntersectionRepository()
         {
             intersectionList = new List<Intersection>();
+        }
+
+        private IntersectionPipeType stringToIntersectionType(string type)
+        {
+            if (type == "in")
+                return IntersectionPipeType.In;
+            else
+                return IntersectionPipeType.Out;
         }
 
         private void Load(string filePath, List<EdgePipe> edgePipes)
@@ -50,14 +52,14 @@ namespace car_traffic_simulation.repositories
                     int pipeId = Int32.Parse(pipeNode.Element(ID_ELEM).Value);
                     string type = pipeNode.Element(TYPE_ELEM).Value.ToString();
                     var roads = (from ep in edgePipes select ep.Edges).SelectMany(e => e);
-                    AddPipeToIntersection(intersectionId, roads.FirstOrDefault(r => r.ID == pipeId));
+                    AddPipeToIntersection(intersectionId, roads.FirstOrDefault(r => r.ID == pipeId), stringToIntersectionType(type));
                 }
             }
         }
 
-        private void AddPipeToIntersection(int intersectionId, EdgeRoad road)
+        private void AddPipeToIntersection(int intersectionId, EdgeRoad road, IntersectionPipeType type)
         {
-            intersectionList[intersectionId].AddPipe(road);
+            intersectionList[intersectionId].AddPipe(road, type);
         }
 
         private void AddIntersection(int intersectionId)

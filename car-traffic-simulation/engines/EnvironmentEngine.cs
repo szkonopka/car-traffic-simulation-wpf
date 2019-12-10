@@ -28,6 +28,11 @@ namespace car_traffic_simulation.engines
 
         private void Render(object sender, EventArgs e)
         {
+            foreach (var intersection in state.intersections)
+            {
+                intersection.act(state);
+            }
+
             foreach (var vehicle in state.vehicleRepository.Vehicles)
             {
                 vehicle.act(state);
