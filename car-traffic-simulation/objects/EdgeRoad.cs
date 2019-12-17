@@ -22,6 +22,15 @@ namespace car_traffic_simulation.objects
 
     public class EdgeRoad
     {
+        public static readonly Dictionary<CardinalDirection, CardinalDirection> OppositeDirections =
+            new Dictionary<CardinalDirection, CardinalDirection>
+            {
+                    { CardinalDirection.North, CardinalDirection.South },
+                    { CardinalDirection.South, CardinalDirection.North },
+                    { CardinalDirection.East, CardinalDirection.West },
+                    { CardinalDirection.West, CardinalDirection.East }
+            };
+
         public int ID { get; set; }
         public int PipeID { get; set; }
         public Point2D From { get; set; }

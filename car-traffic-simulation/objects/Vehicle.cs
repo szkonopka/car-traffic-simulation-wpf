@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace car_traffic_simulation.objects
@@ -165,29 +166,59 @@ namespace car_traffic_simulation.objects
             {
                 Velocity = 1;
 
-                if (NextEdge.From.Y == Position.Y && NextEdge.From.X == Position.X)
+                if (NextEdge.Direction == CardinalDirection.East || NextEdge.Direction == CardinalDirection.West)
                 {
-                    State = State.ReadyToLeaveIntersection;
-                    Velocity = OldVelocity;
-                    Console.WriteLine("Zwalniam auto " + ID);
-                    rotateImage();
-                    return;
+                    if (NextEdge.From.Y == Position.Y && NextEdge.From.X == Position.X)
+                    {
+                        State = State.ReadyToLeaveIntersection;
+                        Velocity = OldVelocity;
+                        Console.WriteLine("Zwalniam auto " + ID);
+                        rotateImage();
+                        return;
+                    }
+                    else if (NextEdge.From.Y < Position.Y)
+                    {
+                        Position.Y += 0 - Velocity;
+                    }
+                    else if (NextEdge.From.Y > Position.Y)
+                    {
+                        Position.Y += Velocity;
+                    }
+                    else if (NextEdge.From.X < Position.X)
+                    {
+                        Position.X += 0 - Velocity;
+                    }
+                    else if (NextEdge.From.X > Position.X)
+                    {
+                        Position.X += Velocity;
+                    }
                 }
-                else if (NextEdge.From.X < Position.X)
+                else
                 {
-                    Position.X += 0 - Velocity;
-                }
-                else if (NextEdge.From.X > Position.X)
-                {
-                    Position.X += Velocity;
-                }
-                else if (NextEdge.From.Y < Position.Y)
-                {
-                    Position.Y += 0 - Velocity;
-                }
-                else if (NextEdge.From.Y > Position.Y)
-                {
-                    Position.Y += Velocity;
+                    if (NextEdge.From.Y == Position.Y && NextEdge.From.X == Position.X)
+                    {
+                        State = State.ReadyToLeaveIntersection;
+                        Velocity = OldVelocity;
+                        Console.WriteLine("Zwalniam auto " + ID);
+                        rotateImage();
+                        return;
+                    }
+                    else if (NextEdge.From.X < Position.X)
+                    {
+                        Position.X += 0 - Velocity;
+                    }
+                    else if (NextEdge.From.X > Position.X)
+                    {
+                        Position.X += Velocity;
+                    }
+                    else if (NextEdge.From.Y < Position.Y)
+                    {
+                        Position.Y += 0 - Velocity;
+                    }
+                    else if (NextEdge.From.Y > Position.Y)
+                    {
+                        Position.Y += Velocity;
+                    } 
                 }
 
                 return;
@@ -386,17 +417,69 @@ namespace car_traffic_simulation.objects
 
         private void rotateImage()
         {
-            //BitmapImage bitmapImage = new BitmapImage(image.Source);
+            RotateTransform rotateTransform = null;
 
-            image.BeginInit();
+            switch (CurrentEdge.Direction)
+            {
+                case CardinalDirection.North:
+                    if (NextEdge.Direction == CardinalDirection.South) {
+                        rotateTransform = new RotateTransform(180);
+                        image.RenderTransformOrigin = new Point(0.25, 0.5);
+                    }
+                    else if (NextEdge.Direction == CardinalDirection.West) {
+                        rotateTransform = new RotateTransform(-90);
+                        image.RenderTransformOrigin = new Point(1, 0.5);
+                    }
+                    else if (NextEdge.Direction == CardinalDirection.East) {
+                        rotateTransform = new RotateTransform(90);
+                        image.RenderTransformOrigin = new Point(1, 0.5);
+                    }
+                    break;
+                case CardinalDirection.South:
+                    if (NextEdge.Direction == CardinalDirection.North) {
+                        rotateTransform = new RotateTransform(180);
+                        image.RenderTransformOrigin = new Point(0.25, 0.5);
+                    }
+                    else if (NextEdge.Direction == CardinalDirection.West) {
+                        rotateTransform = new RotateTransform(90);
+                        image.RenderTransformOrigin = new Point(1, 0.5);
+                    }
+                    else if (NextEdge.Direction == CardinalDirection.East) {
+                        rotateTransform = new RotateTransform(-90);
+                        image.RenderTransformOrigin = new Point(1, 0.5);
+                    }
+                    break;
+                case CardinalDirection.East:
+                    if (NextEdge.Direction == CardinalDirection.West) {
+                        rotateTransform = new RotateTransform(180);
+                        image.RenderTransformOrigin = new Point(1, 0.5);
+                    }
+                    else if (NextEdge.Direction == CardinalDirection.North) {
+                        rotateTransform = new RotateTransform(-90);
+                        image.RenderTransformOrigin = new Point(0.25, 0.5);
+                    }
+                    else if (NextEdge.Direction == CardinalDirection.South) {
+                        rotateTransform = new RotateTransform(90);
+                        image.RenderTransformOrigin = new Point(0.25, 0.5);
+                    }
+                    break;
+                case CardinalDirection.West:
+                    if (NextEdge.Direction == CardinalDirection.East) {
+                        rotateTransform = new RotateTransform(180);
+                        image.RenderTransformOrigin = new Point(1, 0.5);
+                    }
+                    else if (NextEdge.Direction == CardinalDirection.North) {
+                        rotateTransform = new RotateTransform(-90);
+                        image.RenderTransformOrigin = new Point(0.25, 0.5);
+                    }
+                    else if (NextEdge.Direction == CardinalDirection.South) {
+                        rotateTransform = new RotateTransform(-90);
+                        image.RenderTransformOrigin = new Point(0.25, 0.5);
+                    }
+                    break;
+            }
 
-            //image.Source. = Rotation.Rotate90;
-            //bitmapImage.DecodePixelHeight = height;
-            //bitmapImage.DecodePixelWidth = width;
-
-            image.EndInit();
-
-            //image.Source = bitmapImage;
+            image.RenderTransform = rotateTransform;
         }
     }
 }

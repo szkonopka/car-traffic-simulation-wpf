@@ -83,7 +83,10 @@ namespace car_traffic_simulation.objects
             {
                 CurrentVehicle = Queue.First();
                 CurrentVehicle.State = State.OnIntersection;
-                CurrentVehicle.NextEdge = intersectionPipes.FirstOrDefault(ip => ip.IntersectionType == IntersectionPipeType.Out).EdgeRoad;
+                CurrentVehicle.NextEdge = intersectionPipes.FirstOrDefault
+                        (ip => ip.IntersectionType == IntersectionPipeType.Out 
+                        && EdgeRoad.OppositeDirections[ip.EdgeRoad.Direction] != CurrentVehicle.CurrentEdge.Direction
+                        && ip.EdgeRoad.Direction != CurrentVehicle.CurrentEdge.Direction).EdgeRoad;
 
                 IsBusy = true;
             }
