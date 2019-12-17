@@ -427,11 +427,11 @@ namespace car_traffic_simulation.objects
                         image.RenderTransformOrigin = new Point(0.25, 0.5);
                     }
                     else if (NextEdge.Direction == CardinalDirection.West) {
-                        rotateTransform = new RotateTransform(-90);
+                        rotateTransform = new RotateTransform(90);
                         image.RenderTransformOrigin = new Point(1, 0.5);
                     }
                     else if (NextEdge.Direction == CardinalDirection.East) {
-                        rotateTransform = new RotateTransform(90);
+                        rotateTransform = new RotateTransform(-90);
                         image.RenderTransformOrigin = new Point(1, 0.5);
                     }
                     break;
@@ -441,11 +441,11 @@ namespace car_traffic_simulation.objects
                         image.RenderTransformOrigin = new Point(0.25, 0.5);
                     }
                     else if (NextEdge.Direction == CardinalDirection.West) {
-                        rotateTransform = new RotateTransform(90);
+                        rotateTransform = new RotateTransform(-90);
                         image.RenderTransformOrigin = new Point(1, 0.5);
                     }
                     else if (NextEdge.Direction == CardinalDirection.East) {
-                        rotateTransform = new RotateTransform(-90);
+                        rotateTransform = new RotateTransform(90);
                         image.RenderTransformOrigin = new Point(1, 0.5);
                     }
                     break;
@@ -459,8 +459,8 @@ namespace car_traffic_simulation.objects
                         image.RenderTransformOrigin = new Point(0.25, 0.5);
                     }
                     else if (NextEdge.Direction == CardinalDirection.South) {
-                        rotateTransform = new RotateTransform(90);
-                        image.RenderTransformOrigin = new Point(0.25, 0.5);
+                        rotateTransform = new RotateTransform(-90);
+                        image.RenderTransformOrigin = new Point(0.5, 1);
                     }
                     break;
                 case CardinalDirection.West:
@@ -473,7 +473,7 @@ namespace car_traffic_simulation.objects
                         image.RenderTransformOrigin = new Point(0.25, 0.5);
                     }
                     else if (NextEdge.Direction == CardinalDirection.South) {
-                        rotateTransform = new RotateTransform(-90);
+                        rotateTransform = new RotateTransform(90);
                         image.RenderTransformOrigin = new Point(0.25, 0.5);
                     }
                     break;
