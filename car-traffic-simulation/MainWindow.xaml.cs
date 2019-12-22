@@ -75,7 +75,7 @@ namespace car_traffic_simulation
 
         public void GenerateRoads()
         {
-            foreach(var road in environment.roadRepository.Roads)
+            foreach(var road in environment.roadRepository.RoadTextures)
             {
                 Canvas.SetTop(road.image, road.Position.Y);
                 Canvas.SetLeft(road.image, road.Position.X);
@@ -90,11 +90,11 @@ namespace car_traffic_simulation
             {
                 var myRect = new Rectangle
                 {
-                    Stroke = Brushes.White,
+                    Stroke = Brushes.LightGreen,
                     StrokeThickness = 2
                 };
-                myRect.Height = 5;
-                myRect.Width = 5;
+                myRect.Height = 20;
+                myRect.Width = 20;
 
                 rectangles.Add(key: vehicle.ID, value: myRect);
 
@@ -126,10 +126,11 @@ namespace car_traffic_simulation
             Vehicles.Children.Clear();
             environment.vehicleRepository.Vehicles.Clear();
             rectangles.Clear();
+            environment.intersections.Clear();
 
             environment.vehicleRepository.LoadFromXml("../../data/Vehicles.xml", environment.edgePipes);
             GenerateVehicles();
-
+            environment.intersections = environment.intersectionRepository.LoadAndGet("../../data/Intersections.xml", environment.edgePipes);
             engine.Start();
         }
     }

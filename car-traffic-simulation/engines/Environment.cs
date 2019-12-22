@@ -26,7 +26,7 @@ namespace car_traffic_simulation.engines
             vehicleRepository = new VehicleRepository();
             intersectionRepository = new IntersectionRepository();
 
-            GraphXmlParser graphParser = new GraphXmlParser();
+            RoadRepository graphParser = new RoadRepository();
 
             edgePipes = graphParser.LoadAndGet("../../data/Roads.xml");
         }
@@ -40,7 +40,7 @@ namespace car_traffic_simulation.engines
 
         public void Redraw()
         {
-            foreach (var road in roadRepository.Roads)
+            foreach (var road in roadRepository.RoadTextures)
             {
                 road.RenderBitmap();
             }

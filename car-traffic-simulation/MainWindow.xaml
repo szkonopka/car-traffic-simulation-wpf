@@ -7,16 +7,16 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="600" Width="1366" SizeToContent="WidthAndHeight">
     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-      <Grid x:Name="Content">
-        <Canvas Height="941" Width="1866">
-          <Canvas x:Name="Roads"></Canvas>
-          <Canvas x:Name="Vehicles"></Canvas>
-          <Canvas x:Name="Buttons">
-              <Button x:Name="startButton" Content="Start" Canvas.Left="403" Canvas.Top="479" Width="83" Background="White" BorderBrush="#FFE00637" Foreground="#FFE00637" Height="29" BorderThickness="2" ClipToBounds="True" SnapsToDevicePixels="True" FontWeight="Bold" FontSize="14" Padding="3" UseLayoutRounding="True" ScrollViewer.CanContentScroll="True" Click="StartButton_Click"/>
-              <Button x:Name="stopButton" Content="Stop" Canvas.Left="654" Canvas.Top="479" Width="83" Background="White" BorderBrush="#FFE00637" Foreground="#FFE00637" Height="29" BorderThickness="2" ClipToBounds="True" SnapsToDevicePixels="True" FontWeight="Bold" FontSize="14" Padding="3" UseLayoutRounding="True" ScrollViewer.CanContentScroll="True" Click="StopButton_Click"/>
-              <Button x:Name="restartButton" Content="Restart" Canvas.Left="889" Canvas.Top="479" Width="83" Background="White" BorderBrush="#FFE00637" Foreground="#FFE00637" Height="29" BorderThickness="2" ClipToBounds="True" SnapsToDevicePixels="True" FontWeight="Bold" FontSize="14" Padding="3" UseLayoutRounding="True" ScrollViewer.CanContentScroll="True" Click="RestartButton_Click"/>
-          </Canvas>
-        </Canvas>
-      </Grid>
+        <Grid x:Name="Content">
+            <Canvas Height="941" Width="1866">
+                <Canvas x:Name="Roads"></Canvas>
+                <Canvas x:Name="Vehicles"></Canvas>
+                <Canvas x:Name="Buttons">
+                    <Button x:Name="startButton" Content="Start" Canvas.Left="624" Canvas.Top="538" Width="82" Background="White" BorderBrush="#FFE00637" Foreground="#FFE00637" Height="28" BorderThickness="2" ClipToBounds="True" SnapsToDevicePixels="True" FontWeight="Bold" FontSize="14" Padding="3" UseLayoutRounding="True" ScrollViewer.CanContentScroll="True" Click="StartButton_Click"/>
+                    <Button x:Name="stopButton" Content="Stop" Canvas.Left="874" Canvas.Top="538" Width="84" Background="White" BorderBrush="#FFE00637" Foreground="#FFE00637" Height="28" BorderThickness="2" ClipToBounds="True" SnapsToDevicePixels="True" FontWeight="Bold" FontSize="14" Padding="3" UseLayoutRounding="True" ScrollViewer.CanContentScroll="True" Click="StopButton_Click"/>
+                    <Button x:Name="restartButton" Content="Restart" Canvas.Left="1110" Canvas.Top="538" Width="82" Background="White" BorderBrush="#FFE00637" Foreground="#FFE00637" Height="28" BorderThickness="2" ClipToBounds="True" SnapsToDevicePixels="True" FontWeight="Bold" FontSize="14" Padding="3" UseLayoutRounding="True" ScrollViewer.CanContentScroll="True" Click="RestartButton_Click"/>
+                </Canvas>
+            </Canvas>
+        </Grid>
     </ScrollViewer>
 </Window>

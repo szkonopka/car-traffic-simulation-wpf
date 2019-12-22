@@ -23,7 +23,8 @@ namespace car_traffic_simulation.objects
         InIntersectionQueue,
         OnIntersection,
         ReadyToLeaveIntersection,
-        Move
+        Move,
+        NoIntersection
     };
 
     public class Vehicle
@@ -42,10 +43,9 @@ namespace car_traffic_simulation.objects
         public EdgeRoad CurrentEdge { get; set; }
         public EdgeRoad NextEdge { get; set; } = null;
         public int NewPositionY { get; set; }
+        public int NewPositionX { get; set; }
         public int PivotX { get; set; }
         public int PivotY { get; set; }
-        private bool stop = false;
-        private bool OnIntersection = false;
         public State State { get; set; }
         public int CurrentConnectorX { get; set; }
         public int CurrentConnectorY { get; set; }
@@ -81,6 +81,7 @@ namespace car_traffic_simulation.objects
             }
 
             NewPositionY = Position.Y;
+            NewPositionX = Position.X;
 
             Velocity = velocity;
             OldVelocity = Velocity;
@@ -98,8 +99,6 @@ namespace car_traffic_simulation.objects
         {
             Canvas.SetLeft(image, calculateStartDrawPointX());
             Canvas.SetTop(image, calculateStartDrawPointY());
-            //Canvas.SetLeft(image, Position.X);
-            //Canvas.SetTop(image, Position.Y);
         }
 
         public virtual void Draw(Action action) { }
@@ -125,8 +124,6 @@ namespace car_traffic_simulation.objects
 
         public int calculateStartDrawPointX()
         {
-            //return Position.X + Width / 2;
-
             switch (CurrentEdge.Direction)
             {
                 case CardinalDirection.East:
@@ -142,8 +139,6 @@ namespace car_traffic_simulation.objects
 
         public int calculateStartDrawPointY()
         {
-            //return Position.Y - Height / 2;
-
             switch (CurrentEdge.Direction)
             {
                 case CardinalDirection.East:
@@ -161,6 +156,50 @@ namespace car_traffic_simulation.objects
         {
             MovementVetorX = 0;
             MovementVetorY = 0;
+
+            if (State == State.NoIntersection)
+            {
+                /*
+                CurrentEdge = environment.edgePipes
+                    .SelectMany(e => e.Edges).Where(e => e.ID != CurrentEdge.ID);
+                */
+
+                var intersectionsPipes = environment.intersections
+                    .SelectMany(ip => ip.intersectionPipes).ToList();
+
+                Dictionary<int, List<IntersectionPipeType>> intersectionPipesPairs = new Dictionary<int, List<IntersectionPipeType>>();
+
+                foreach (var ip in intersectionsPipes)
+                {
+                    if (!intersectionPipesPairs.ContainsKey(ip.EdgeRoad.ID))
+                    {
+                        intersectionPipesPairs.Add(ip.EdgeRoad.ID, new List<IntersectionPipeType>());
+                    }
+
+                    intersectionPipesPairs[ip.EdgeRoad.ID].Add(ip.IntersectionType);
+                }
+                Console.WriteLine("SIZE PAIRS: " + intersectionPipesPairs.Count());
+                var distinctEdges = intersectionPipesPairs.Where(ipp => ipp.Value.Count() == 1 && ipp.Value.Contains(IntersectionPipeType.In));
+
+                Console.WriteLine("SIZE DISTINCT: " + distinctEdges.Count());
+
+                Random r = new Random();
+
+                var randomEdge = distinctEdges.ElementAt(r.Next(0, distinctEdges.Count())).Key;
+                Console.WriteLine("RANDOM EDGE ID: " + randomEdge);
+
+                CurrentEdge = environment.edgePipes
+                    .SelectMany(ep => ep.Edges)
+                    .FirstOrDefault(e => e.ID == randomEdge);
+
+                Velocity = OldVelocity;
+                State = State.Move;
+
+                Position.X = CurrentEdge.From.X;
+                Position.Y = CurrentEdge.From.Y;
+                NewPositionX = CurrentEdge.From.X;
+                NewPositionY = CurrentEdge.From.Y;
+            }
 
             if (NextEdge != null && State == State.OnIntersection)
             {
@@ -234,20 +273,30 @@ namespace car_traffic_simulation.objects
                 if (State == State.InIntersectionQueue)
                     continue;
 
+                if (State == State.NoIntersection)
+                    continue;
+
                 if (!restEdges.Where(re => re.PipeID == vehicle.CurrentEdge.PipeID).Any())
                 {
                     continue;
                 }
 
-                if ((CurrentEdge.Direction == CardinalDirection.East || CurrentEdge.Direction == CardinalDirection.West) && NewPositionY < Position.Y)
+                switch (CurrentEdge.Direction)
                 {
-                    Console.WriteLine("NAPIERDALAM ---");
-                    Position.Y -= 1;
-                }
-                else if ((CurrentEdge.Direction == CardinalDirection.East || CurrentEdge.Direction == CardinalDirection.West) && NewPositionY > Position.Y)
-                {
-                    Console.WriteLine("NAPIERDALAM +++");
-                    Position.Y += 1;
+                    case CardinalDirection.North:
+                    case CardinalDirection.South:
+                        if ((CurrentEdge.Direction == CardinalDirection.North || CurrentEdge.Direction == CardinalDirection.South) && NewPositionX < Position.X)
+                            Position.X -= 1;
+                        else if ((CurrentEdge.Direction == CardinalDirection.North || CurrentEdge.Direction == CardinalDirection.South) && NewPositionX > Position.X)
+                            Position.X += 1;
+                        break;
+                    case CardinalDirection.West:
+                    case CardinalDirection.East:
+                        if ((CurrentEdge.Direction == CardinalDirection.East || CurrentEdge.Direction == CardinalDirection.West) && NewPositionY < Position.Y)
+                            Position.Y -= 1;
+                        else if ((CurrentEdge.Direction == CardinalDirection.East || CurrentEdge.Direction == CardinalDirection.West) && NewPositionY > Position.Y)
+                            Position.Y += 1;
+                        break;
                 }
 
                 bool isOnIntersection = false;
@@ -284,7 +333,13 @@ namespace car_traffic_simulation.objects
                 {
                     OldVelocity = Velocity;
                     Velocity = 0;
-                    State = State.InIntersectionQueue;
+
+                    bool noIntersection = !environment.intersections.Any(ip => ip.intersectionPipes.Any(p => p.EdgeRoad.ID == CurrentEdge.ID && p.IntersectionType == IntersectionPipeType.In));
+
+                    if (noIntersection)
+                        State = State.NoIntersection;
+                    else
+                        State = State.InIntersectionQueue;
                     
                     continue;
                 }        
@@ -304,23 +359,53 @@ namespace car_traffic_simulation.objects
 
                     foreach (var edge in restEdges)
                     {
-                        if (closestEdgeDistance == 0)
+                        switch (CurrentEdge.Direction)
                         {
-                            closestEdgeDistance = Math.Abs(edge.From.Y - CurrentEdge.From.Y);
-                            closestEdge = edge;
-                        }
+                            case CardinalDirection.South:
+                            case CardinalDirection.North:
+                                if (closestEdgeDistance == 0)
+                                {
+                                    closestEdgeDistance = Math.Abs(edge.From.X - CurrentEdge.From.X);
+                                    closestEdge = edge;
+                                }
 
-                        if (closestEdgeDistance != 0 && Math.Abs(edge.From.Y - CurrentEdge.From.Y) < closestEdgeDistance)
-                        {
-                            closestEdgeDistance = Math.Abs(edge.From.Y - CurrentEdge.From.Y);
-                            closestEdge = edge;
+                                if (closestEdgeDistance != 0 && Math.Abs(edge.From.X - CurrentEdge.From.X) < closestEdgeDistance)
+                                {
+                                    closestEdgeDistance = Math.Abs(edge.From.X - CurrentEdge.From.X);
+                                    closestEdge = edge;
+                                }
+                                break;
+                            case CardinalDirection.West:
+                            case CardinalDirection.East:
+                                if (closestEdgeDistance == 0)
+                                {
+                                    closestEdgeDistance = Math.Abs(edge.From.Y - CurrentEdge.From.Y);
+                                    closestEdge = edge;
+                                }
+
+                                if (closestEdgeDistance != 0 && Math.Abs(edge.From.Y - CurrentEdge.From.Y) < closestEdgeDistance)
+                                {
+                                    closestEdgeDistance = Math.Abs(edge.From.Y - CurrentEdge.From.Y);
+                                    closestEdge = edge;
+                                }
+                                break;
                         }
                     }
 
                     if (isNextLaneFreeForOutrun(closestEdge, environment.vehicleRepository.Vehicles))
                     {
-                        //Position.Y = closestEdge.From.Y;
-                        NewPositionY = closestEdge.From.Y;
+                        switch (CurrentEdge.Direction)
+                        {
+                            case CardinalDirection.East:
+                            case CardinalDirection.West:
+                                NewPositionY = closestEdge.From.Y;
+                                break;
+                            case CardinalDirection.North:
+                            case CardinalDirection.South:
+                                NewPositionX = closestEdge.From.X;
+                                break;
+                        }
+
                         CurrentEdge = closestEdge; 
                         Velocity += 1;
                     }
@@ -328,10 +413,6 @@ namespace car_traffic_simulation.objects
             }
  
             decideAction();
-
-            Console.WriteLine(ID + ": MovementVectorY: " + MovementVetorY);
-            Console.WriteLine(ID + ": PositionY: " + Position.Y);
-            Console.WriteLine(ID + ": NewPositionY: " + NewPositionY);
 
             Position.X += MovementVetorX;
             Position.Y += MovementVetorY;
@@ -350,29 +431,22 @@ namespace car_traffic_simulation.objects
                 if (vehicle.CurrentEdge.ID != closestEdge.ID)
                     continue;
 
-                if (doesVectorIntrudeOnVector(Position.X, Position.X + Width, vehicle.Position.X, vehicle.Position.X + vehicle.Width))
-                    return false;
+                switch (CurrentEdge.Direction)
+                {
+                    case CardinalDirection.North:
+                    case CardinalDirection.South:
+                        if (doesVectorIntrudeOnVectorY(Position.Y, Position.Y + Height, vehicle.Position.Y, vehicle.Position.Y + vehicle.Height))
+                            return false;
+                        break;
+                    case CardinalDirection.West:
+                    case CardinalDirection.East:
+                        if (doesVectorIntrudeOnVectorX(Position.X, Position.X + Width, vehicle.Position.X, vehicle.Position.X + vehicle.Width))
+                            return false;
+                        break;
+                }
             }
 
             return true;
-        }
-
-        public bool outrun(ref int CalculatedMovementVectorX, ref int CalculatedMovementVectorY, Vehicle toOutrun)
-        {
-            if (Position.Y <= (toOutrun.Position.Y + toOutrun.Height))
-            {
-                CalculatedMovementVectorY = 0 - Velocity;
-            }
-
-            if (Position.X >= (toOutrun.Position.X + 2 * toOutrun.Width))
-                return true;
-
-            return false;
-        }
-
-        private bool doesVehicleMoveToTheSameDirection(Vehicle vehicle)
-        {
-            return vehicle.calculateStartDrawPointY() + 20 + vehicle.Height >= calculateStartDrawPointY() && calculateStartDrawPointY() >= vehicle.calculateStartDrawPointY() - 20 - vehicle.Height;
         }
 
         private bool isVehicleInFront(Vehicle vehicle)
@@ -383,6 +457,10 @@ namespace car_traffic_simulation.objects
                     return vehicle.calculateStartDrawPointX() > calculateStartDrawPointX();
                 case CardinalDirection.West:
                     return vehicle.calculateStartDrawPointX() < calculateStartDrawPointX();
+                case CardinalDirection.North:
+                    return vehicle.calculateStartDrawPointY() > calculateStartDrawPointY();
+                case CardinalDirection.South:
+                    return vehicle.calculateStartDrawPointY() < calculateStartDrawPointY();
                 default:
                     return false;
             }
@@ -390,29 +468,29 @@ namespace car_traffic_simulation.objects
 
         private bool isVehicleNCarWidthInFrontAtLeast(int nCarWidth, Vehicle vehicle)
         {
-            return Math.Abs(vehicle.calculateStartDrawPointX() - calculateStartDrawPointX()) < 2 * Width;
-        }
-
-        private bool isLeftLaneFreeForOutrun(car_traffic_simulation.engines.Environment environment)
-        {
-            foreach (var vehicle in environment.vehicleRepository.Vehicles)
+            switch (CurrentEdge.Direction)
             {
-                if (vehicle.ID == ID)
-                    continue;
-
-                if (vehicle.Position.Y < (Position.Y - 2 * Height))              
-                    continue;
-
-                if (doesVectorIntrudeOnVector(Position.X, Position.X + Width, vehicle.Position.X, vehicle.Position.X + vehicle.Width))
+                case CardinalDirection.North:
+                case CardinalDirection.South:
+                    return Math.Abs(vehicle.calculateStartDrawPointY() - calculateStartDrawPointY()) < 2 * Height;
+                    break;
+                case CardinalDirection.West:
+                case CardinalDirection.East:
+                    return Math.Abs(vehicle.calculateStartDrawPointX() - calculateStartDrawPointX()) < 2 * Width;
+                    break;
+                default:
                     return false;
             }
-
-            return true;
         }
 
-        private bool doesVectorIntrudeOnVector(int firstVecFirstX, int firstVecSecX, int secVecFirstX, int secVecSecX)
+        private bool doesVectorIntrudeOnVectorY(int firstVecFirst, int firstVecSec, int secVecFirst, int secVecSec)
         {
-            return !((secVecSecX < firstVecFirstX - Width/2) || (secVecFirstX > firstVecSecX + Width/2));
+            return !((secVecSec < firstVecFirst - Height / 2) || (secVecFirst > firstVecSec + Height / 2));
+        }
+
+        private bool doesVectorIntrudeOnVectorX(int firstVecFirst, int firstVecSec, int secVecFirst, int secVecSec)
+        {
+            return !((secVecSec < firstVecFirst - Width/2) || (secVecFirst > firstVecSec + Width/2));
         }
 
         private void rotateImage()
