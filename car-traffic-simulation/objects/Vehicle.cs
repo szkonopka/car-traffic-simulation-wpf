@@ -49,6 +49,7 @@ namespace car_traffic_simulation.objects
         public State State { get; set; }
         public int CurrentConnectorX { get; set; }
         public int CurrentConnectorY { get; set; }
+        public int? CurrentIntersectionID { get; set; } = null;
 
         public Vehicle(int id, int offSetX, int offSetY, int velocity, int height, int width, EdgeRoad currentEdge)
         {
@@ -339,7 +340,10 @@ namespace car_traffic_simulation.objects
                     if (noIntersection)
                         State = State.NoIntersection;
                     else
+                    {
+                        CurrentIntersectionID = environment.intersections.SingleOrDefault(ip => ip.intersectionPipes.Any(p => p.EdgeRoad.ID == CurrentEdge.ID && p.IntersectionType == IntersectionPipeType.In)).ID;
                         State = State.InIntersectionQueue;
+                    }
                     
                     continue;
                 }        
@@ -435,7 +439,8 @@ namespace car_traffic_simulation.objects
                 {
                     case CardinalDirection.North:
                     case CardinalDirection.South:
-                        if (doesVectorIntrudeOnVectorY(Position.Y, Position.Y + Height, vehicle.Position.Y, vehicle.Position.Y + vehicle.Height))
+                        //if (doesVectorIntrudeOnVectorY(Position.Y, Position.Y + Height, vehicle.Position.Y, vehicle.Position.Y + vehicle.Height))
+                        if (doesVectorIntrudeOnVectorY(Position.Y, Position.Y + Width, vehicle.Position.Y, vehicle.Position.Y + vehicle.Width))
                             return false;
                         break;
                     case CardinalDirection.West:
@@ -472,7 +477,8 @@ namespace car_traffic_simulation.objects
             {
                 case CardinalDirection.North:
                 case CardinalDirection.South:
-                    return Math.Abs(vehicle.calculateStartDrawPointY() - calculateStartDrawPointY()) < 2 * Height;
+                    //return Math.Abs(vehicle.calculateStartDrawPointY() - calculateStartDrawPointY()) < 2 * Height;
+                    return Math.Abs(vehicle.calculateStartDrawPointY() - calculateStartDrawPointY()) < 2 * Width;
                     break;
                 case CardinalDirection.West:
                 case CardinalDirection.East:
@@ -485,7 +491,8 @@ namespace car_traffic_simulation.objects
 
         private bool doesVectorIntrudeOnVectorY(int firstVecFirst, int firstVecSec, int secVecFirst, int secVecSec)
         {
-            return !((secVecSec < firstVecFirst - Height / 2) || (secVecFirst > firstVecSec + Height / 2));
+            //return !((secVecSec < firstVecFirst - Height / 2) || (secVecFirst > firstVecSec + Height / 2));
+            return !((secVecSec < firstVecFirst - Width / 2) || (secVecFirst > firstVecSec + Width / 2));
         }
 
         private bool doesVectorIntrudeOnVectorX(int firstVecFirst, int firstVecSec, int secVecFirst, int secVecSec)

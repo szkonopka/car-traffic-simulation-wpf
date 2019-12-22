@@ -165,7 +165,7 @@
     <offsetX>0</offsetX>
     <offsetY>-140</offsetY>
     <texturePath>assets/green-car.png</texturePath>
-    <rotation>90</rotation>
+    <rotation>180</rotation>
     <edgePipeId>3</edgePipeId>
     <edgeRoadId>1</edgeRoadId>
   </vehicle>
@@ -178,7 +178,7 @@
     <offsetX>0</offsetX>
     <offsetY>-220</offsetY>
     <texturePath>assets/green-car.png</texturePath>
-    <rotation>90</rotation>
+    <rotation>180</rotation>
     <edgePipeId>3</edgePipeId>
     <edgeRoadId>1</edgeRoadId>
   </vehicle>

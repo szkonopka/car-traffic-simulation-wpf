@@ -71,7 +71,7 @@ namespace car_traffic_simulation.objects
                     vehicle.NewPositionY = vehicle.Position.Y;
                     vehicle.NewPositionX = vehicle.Position.X;
                     vehicle.State = State.Move;
-
+                    vehicle.CurrentIntersectionID = null;
                     Queue.Remove(vehicle);
                     IsBusy = false;
                 }

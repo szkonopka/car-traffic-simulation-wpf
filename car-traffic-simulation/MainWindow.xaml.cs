@@ -41,13 +41,18 @@ namespace car_traffic_simulation
         Environment environment;
         EnvironmentEngine engine;
         DispatcherTimer timer = new DispatcherTimer();
+        DispatcherTimer dataGridTimer = new DispatcherTimer();
         Dictionary<int, Rectangle> rectangles = new Dictionary<int, Rectangle>();
+        DataWindow dataWindow;
 
         public MainWindow()
         {   
             var handle = NativeMethods.GetConsoleWindow();
 
             InitializeComponent();
+
+            dataWindow = new DataWindow();
+            dataWindow.Show();
 
             environment = new Environment();
             environment.LoadExampleEnvironment();
@@ -62,6 +67,10 @@ namespace car_traffic_simulation
             timer.Tick += Render;
             timer.Interval = new TimeSpan(0, 0, 0, 0, 10);
             timer.Start();
+
+            dataGridTimer.Tick += ReloadDataGrid;
+            dataGridTimer.Interval = new TimeSpan(0, 0, 0, 1);
+            dataGridTimer.Start();
         }
 
         public void Render(object sender, EventArgs e)
@@ -71,6 +80,11 @@ namespace car_traffic_simulation
                 Canvas.SetTop(rectangles[vehicle.ID], vehicle.Position.Y);
                 Canvas.SetLeft(rectangles[vehicle.ID], vehicle.Position.X);
             }            
+        }
+
+        public void ReloadDataGrid(object sender, EventArgs e)
+        {
+            dataWindow.reloadData(engine);
         }
 
         public void GenerateRoads()

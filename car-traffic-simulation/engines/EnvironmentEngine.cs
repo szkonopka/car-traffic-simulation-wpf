@@ -12,7 +12,7 @@ namespace car_traffic_simulation.engines
     public class EnvironmentEngine
     {
         DispatcherTimer environmentTimer;
-        Environment state;
+        public Environment state { get; }
         
         public EnvironmentEngine(Environment environment, uint framePerSecond = 60)
         {
