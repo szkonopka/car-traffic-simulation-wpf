@@ -69,7 +69,7 @@ namespace car_traffic_simulation
             timer.Start();
 
             dataGridTimer.Tick += ReloadDataGrid;
-            dataGridTimer.Interval = new TimeSpan(0, 0, 0, 1);
+            dataGridTimer.Interval = new TimeSpan(0, 0, 0, 2);
             dataGridTimer.Start();
         }
 

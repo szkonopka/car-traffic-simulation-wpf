@@ -50,6 +50,7 @@ namespace car_traffic_simulation.objects
         public int CurrentConnectorX { get; set; }
         public int CurrentConnectorY { get; set; }
         public int? CurrentIntersectionID { get; set; } = null;
+        public string URI { get; set; }
 
         public Vehicle(int id, int offSetX, int offSetY, int velocity, int height, int width, EdgeRoad currentEdge)
         {
@@ -497,11 +498,25 @@ namespace car_traffic_simulation.objects
 
         private bool doesVectorIntrudeOnVectorX(int firstVecFirst, int firstVecSec, int secVecFirst, int secVecSec)
         {
-            return !((secVecSec < firstVecFirst - Width/2) || (secVecFirst > firstVecSec + Width/2));
+            return !((secVecSec < firstVecFirst - Width / 2) || (secVecFirst > firstVecSec + Width / 2));
         }
 
         private void rotateImage()
         {
+            image.BeginInit();
+
+            BitmapImage bitmapImage = new BitmapImage();
+            bitmapImage.BeginInit();
+
+            bitmapImage.UriSource = new Uri("..\\..\\" + URI, UriKind.Relative);
+            bitmapImage.DecodePixelHeight = (int) Width;
+            bitmapImage.DecodePixelWidth = (int) Height;
+            bitmapImage.Rotation = Rotation.Rotate90;
+            bitmapImage.EndInit();
+            image.Source = bitmapImage;
+
+            image.EndInit();
+
             RotateTransform rotateTransform = null;
 
             switch (CurrentEdge.Direction)
@@ -509,62 +524,52 @@ namespace car_traffic_simulation.objects
                 case CardinalDirection.North:
                     if (NextEdge.Direction == CardinalDirection.South) {
                         rotateTransform = new RotateTransform(180);
-                        image.RenderTransformOrigin = new Point(0.25, 0.5);
                     }
                     else if (NextEdge.Direction == CardinalDirection.West) {
                         rotateTransform = new RotateTransform(90);
-                        image.RenderTransformOrigin = new Point(1, 0.5);
                     }
                     else if (NextEdge.Direction == CardinalDirection.East) {
                         rotateTransform = new RotateTransform(-90);
-                        image.RenderTransformOrigin = new Point(1, 0.5);
                     }
                     break;
                 case CardinalDirection.South:
                     if (NextEdge.Direction == CardinalDirection.North) {
                         rotateTransform = new RotateTransform(180);
-                        image.RenderTransformOrigin = new Point(0.25, 0.5);
                     }
                     else if (NextEdge.Direction == CardinalDirection.West) {
                         rotateTransform = new RotateTransform(-90);
-                        image.RenderTransformOrigin = new Point(1, 0.5);
                     }
                     else if (NextEdge.Direction == CardinalDirection.East) {
                         rotateTransform = new RotateTransform(90);
-                        image.RenderTransformOrigin = new Point(1, 0.5);
                     }
                     break;
                 case CardinalDirection.East:
                     if (NextEdge.Direction == CardinalDirection.West) {
                         rotateTransform = new RotateTransform(180);
-                        image.RenderTransformOrigin = new Point(1, 0.5);
                     }
                     else if (NextEdge.Direction == CardinalDirection.North) {
                         rotateTransform = new RotateTransform(-90);
-                        image.RenderTransformOrigin = new Point(0.25, 0.5);
                     }
                     else if (NextEdge.Direction == CardinalDirection.South) {
                         rotateTransform = new RotateTransform(-90);
-                        image.RenderTransformOrigin = new Point(0.5, 1);
                     }
                     break;
                 case CardinalDirection.West:
                     if (NextEdge.Direction == CardinalDirection.East) {
                         rotateTransform = new RotateTransform(180);
-                        image.RenderTransformOrigin = new Point(1, 0.5);
                     }
                     else if (NextEdge.Direction == CardinalDirection.North) {
                         rotateTransform = new RotateTransform(-90);
-                        image.RenderTransformOrigin = new Point(0.25, 0.5);
                     }
                     else if (NextEdge.Direction == CardinalDirection.South) {
                         rotateTransform = new RotateTransform(90);
-                        image.RenderTransformOrigin = new Point(0.25, 0.5);
                     }
                     break;
             }
 
-            image.RenderTransform = rotateTransform;
+            //image.RenderTransformOrigin = new Point(0.5, 0.5);
+            //image.RenderTransform = rotateTransform;
+            //image.RenderTransformOrigin = oldOrigin;
         }
     }
 }

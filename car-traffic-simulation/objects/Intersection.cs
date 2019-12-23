@@ -71,7 +71,6 @@ namespace car_traffic_simulation.objects
                     vehicle.NewPositionY = vehicle.Position.Y;
                     vehicle.NewPositionX = vehicle.Position.X;
                     vehicle.State = State.Move;
-                    vehicle.CurrentIntersectionID = null;
                     Queue.Remove(vehicle);
                     IsBusy = false;
                 }
@@ -83,7 +82,7 @@ namespace car_traffic_simulation.objects
 
                 CurrentVehicle = Queue.First();
                 CurrentVehicle.State = State.OnIntersection;
-
+                CurrentVehicle.CurrentIntersectionID = null;
                 var edges = intersectionPipes.Where
                         (ip => ip.IntersectionType == IntersectionPipeType.Out
                         && EdgeRoad.OppositeDirections[ip.EdgeRoad.Direction] != CurrentVehicle.CurrentEdge.Direction
