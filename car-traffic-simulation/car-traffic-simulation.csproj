@@ -73,8 +73,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DataWindow.xaml.cs">
+      <DependentUpon>DataWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="engines\Environment.cs" />
     <Compile Include="engines\EnvironmentEngine.cs" />
+    <Compile Include="models\IntersectionData.cs" />
+    <Compile Include="models\VehicleData.cs" />
     <Compile Include="objects\EdgePipe.cs" />
     <Compile Include="objects\EdgeRoad.cs" />
     <Compile Include="objects\Intersection.cs" />
@@ -85,6 +90,10 @@
     <Compile Include="repositories\IntersectionRepository.cs" />
     <Compile Include="repositories\RoadRepository.cs" />
     <Compile Include="repositories\VehicleRepository.cs" />
+    <Page Include="DataWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -153,13 +162,21 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="data\Roads.xml" />
-    <Resource Include="data\Vehicles-org.xml" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="data\Intersections.xml" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="data\Vehicles.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="data\Vehicles.org.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="data\Intersections.org.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="data\Roads.org.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -8,7 +8,7 @@
           <id>0</id>
           <fromX>1366</fromX>
           <fromY>735</fromY>
-          <toX>0</toX>
+          <toX>490</toX>
           <toY>735</toY>
           <width>50</width>
         </edgeRoad>
@@ -16,7 +16,7 @@
           <id>1</id>
           <fromX>1366</fromX>
           <fromY>785</fromY>
-          <toX>0</toX>
+          <toX>490</toX>
           <toY>785</toY>
           <width>50</width>
         </edgeRoad>
@@ -27,7 +27,7 @@
       <edgeRoads>
         <edgeRoad>
           <id>2</id>
-          <fromX>0</fromX>
+          <fromX>490</fromX>
           <fromY>850</fromY>
           <toX>1366</toX>
           <toY>850</toY>
@@ -35,7 +35,7 @@
         </edgeRoad>
         <edgeRoad>
           <id>3</id>
-          <fromX>0</fromX>
+          <fromX>490</fromX>
           <fromY>900</fromY>
           <toX>1366</toX>
           <toY>900</toY>
@@ -49,7 +49,7 @@
         <edgeRoad>
           <id>4</id>
           <fromX>1400</fromX>
-          <fromY>0</fromY>
+          <fromY>390</fromY>
           <toX>1400</toX>
           <toY>710</toY>
           <width>50</width>
@@ -57,7 +57,7 @@
         <edgeRoad>
           <id>5</id>
           <fromX>1450</fromX>
-          <fromY>0</fromY>
+          <fromY>390</fromY>
           <toX>1450</toX>
           <toY>710</toY>
           <width>50</width>
@@ -72,7 +72,7 @@
           <fromX>1515</fromX>
           <fromY>710</fromY>
           <toX>1515</toX>
-          <toY>0</toY>
+          <toY>390</toY>
           <width>50</width>
         </edgeRoad>
         <edgeRoad>
@@ -80,7 +80,7 @@
           <fromX>1515</fromX>
           <fromY>710</fromY>
           <toX>1515</toX>
-          <toY>0</toY>
+          <toY>390</toY>
           <width>50</width>
         </edgeRoad>
       </edgeRoads>
@@ -123,6 +123,174 @@
           <fromY>900</fromY>
           <toX>1900</toX>
           <toY>900</toY>
+          <width>50</width>
+        </edgeRoad>
+      </edgeRoads>
+    </edgePipe>
+    <edgePipe>
+      <id>6</id>
+      <edgeRoads>
+        <edgeRoad>
+          <id>12</id>
+          <fromX>270</fromX>
+          <fromY>735</fromY>
+          <toX>0</toX>
+          <toY>735</toY>
+          <width>50</width>
+        </edgeRoad>
+        <edgeRoad>
+          <id>13</id>
+          <fromX>270</fromX>
+          <fromY>785</fromY>
+          <toX>0</toX>
+          <toY>785</toY>
+          <width>50</width>
+        </edgeRoad>
+      </edgeRoads>
+    </edgePipe>
+    <edgePipe>
+      <id>7</id>
+      <edgeRoads>
+        <edgeRoad>
+          <id>14</id>
+          <fromX>0</fromX>
+          <fromY>850</fromY>
+          <toX>270</toX>
+          <toY>850</toY>
+          <width>50</width>
+        </edgeRoad>
+        <edgeRoad>
+          <id>15</id>
+          <fromX>0</fromX>
+          <fromY>900</fromY>
+          <toX>270</toX>
+          <toY>900</toY>
+          <width>50</width>
+        </edgeRoad>
+      </edgeRoads>
+    </edgePipe>
+    <edgePipe>
+      <id>8</id>
+      <edgeRoads>
+        <edgeRoad>
+          <id>16</id>
+          <fromX>1400</fromX>
+          <fromY>0</fromY>
+          <toX>1400</toX>
+          <toY>170</toY>
+          <width>50</width>
+        </edgeRoad>
+        <edgeRoad>
+          <id>17</id>
+          <fromX>1450</fromX>
+          <fromY>0</fromY>
+          <toX>1450</toX>
+          <toY>170</toY>
+          <width>50</width>
+        </edgeRoad>
+      </edgeRoads>
+    </edgePipe>
+    <edgePipe>
+      <id>9</id>
+      <edgeRoads>
+        <edgeRoad>
+          <id>18</id>
+          <fromX>1515</fromX>
+          <fromY>170</fromY>
+          <toX>1515</toX>
+          <toY>0</toY>
+          <width>50</width>
+        </edgeRoad>
+        <edgeRoad>
+          <id>19</id>
+          <fromX>1515</fromX>
+          <fromY>170</fromY>
+          <toX>1515</toX>
+          <toY>0</toY>
+          <width>50</width>
+        </edgeRoad>
+      </edgeRoads>
+    </edgePipe>
+    <edgePipe>
+      <id>10</id>
+      <edgeRoads>
+        <edgeRoad>
+          <id>20</id>
+          <fromX>1366</fromX>
+          <fromY>195</fromY>
+          <toX>500</toX>
+          <toY>195</toY>
+          <width>50</width>
+        </edgeRoad>
+        <edgeRoad>
+          <id>21</id>
+          <fromX>1366</fromX>
+          <fromY>250</fromY>
+          <toX>500</toX>
+          <toY>250</toY>
+          <width>50</width>
+        </edgeRoad>
+      </edgeRoads>
+    </edgePipe>
+    <edgePipe>
+      <id>11</id>
+      <edgeRoads>
+        <edgeRoad>
+          <id>22</id>
+          <fromX>500</fromX>
+          <fromY>310</fromY>
+          <toX>1366</toX>
+          <toY>310</toY>
+          <width>50</width>
+        </edgeRoad>
+        <edgeRoad>
+          <id>23</id>
+          <fromX>500</fromX>
+          <fromY>365</fromY>
+          <toX>1366</toX>
+          <toY>365</toY>
+          <width>50</width>
+        </edgeRoad>
+      </edgeRoads>
+    </edgePipe>
+    <edgePipe>
+      <id>12</id>
+      <edgeRoads>
+        <edgeRoad>
+          <id>24</id>
+          <fromX>300</fromX>
+          <fromY>400</fromY>
+          <toX>300</toX>
+          <toY>710</toY>
+          <width>50</width>
+        </edgeRoad>
+        <edgeRoad>
+          <id>25</id>
+          <fromX>350</fromX>
+          <fromY>400</fromY>
+          <toX>350</toX>
+          <toY>710</toY>
+          <width>50</width>
+        </edgeRoad>
+      </edgeRoads>
+    </edgePipe>
+    <edgePipe>
+      <id>13</id>
+      <edgeRoads>
+        <edgeRoad>
+          <id>26</id>
+          <fromX>410</fromX>
+          <fromY>710</fromY>
+          <toX>410</toX>
+          <toY>400</toY>
+          <width>50</width>
+        </edgeRoad>
+        <edgeRoad>
+          <id>27</id>
+          <fromX>465</fromX>
+          <fromY>710</fromY>
+          <toX>465</toX>
+          <toY>400</toY>
           <width>50</width>
         </edgeRoad>
       </edgeRoads>

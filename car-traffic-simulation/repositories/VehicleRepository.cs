@@ -91,8 +91,8 @@ namespace car_traffic_simulation.spawners
                 vehicle.image.Height = height;
                 vehicle.image.Width = width;
             }
-                
 
+            vehicle.URI = vehicleInfo.ImgUrl;
             Vehicles.Add(vehicle);
         }
 

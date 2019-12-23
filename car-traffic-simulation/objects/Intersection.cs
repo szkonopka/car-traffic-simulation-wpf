@@ -65,15 +65,12 @@ namespace car_traffic_simulation.objects
 
                 if (vehicle.State == State.ReadyToLeaveIntersection && Queue.Contains(vehicle))
                 {
-                    
                     vehicle.CurrentEdge = environment.edgePipes.FirstOrDefault(ep => ep.Edges.Any(e => e.ID == vehicle.NextEdge.ID)).Edges.FirstOrDefault(e => e.ID == vehicle.NextEdge.ID);
-                    Console.WriteLine("CurrentEdge X: " + vehicle.CurrentEdge.From.X + " Y: " + vehicle.CurrentEdge.From.Y);
                     vehicle.Position.X = vehicle.CurrentEdge.From.X;
                     vehicle.Position.Y = vehicle.CurrentEdge.From.Y;
                     vehicle.NewPositionY = vehicle.Position.Y;
-                    //vehicle.NextEdge = null;
+                    vehicle.NewPositionX = vehicle.Position.X;
                     vehicle.State = State.Move;
-
                     Queue.Remove(vehicle);
                     IsBusy = false;
                 }
@@ -81,10 +78,17 @@ namespace car_traffic_simulation.objects
 
             if (!IsBusy && Queue.Count() != 0)
             {
+                Random r = new Random();
+
                 CurrentVehicle = Queue.First();
                 CurrentVehicle.State = State.OnIntersection;
-                CurrentVehicle.NextEdge = intersectionPipes.FirstOrDefault(ip => ip.IntersectionType == IntersectionPipeType.Out).EdgeRoad;
+                CurrentVehicle.CurrentIntersectionID = null;
+                var edges = intersectionPipes.Where
+                        (ip => ip.IntersectionType == IntersectionPipeType.Out
+                        && EdgeRoad.OppositeDirections[ip.EdgeRoad.Direction] != CurrentVehicle.CurrentEdge.Direction
+                        && ip.EdgeRoad.Direction != CurrentVehicle.CurrentEdge.Direction);
 
+                CurrentVehicle.NextEdge = edges.ElementAt(r.Next(0, edges.Count())).EdgeRoad;
                 IsBusy = true;
             }
         }
@@ -92,13 +96,7 @@ namespace car_traffic_simulation.objects
         public bool carOnInput(Vehicle vehicle)
         {
             var tmpPoint2D = new Point2D(vehicle.CurrentConnectorX, vehicle.CurrentConnectorY);
-            foreach (var connector in Connectors)
-            {
-                Console.WriteLine("connector: " + connector.toString());
-            }
-            Console.WriteLine("Car in queue: " + (vehicle.State == State.InIntersectionQueue ? "true" : "false"));
-            Console.WriteLine("Car point: " + tmpPoint2D.toString());
-            Console.WriteLine("Cat position in connectors: " + (Connectors.Any(p => p == tmpPoint2D) ? "true" : "false"));
+
             return Connectors.Any(p => p == tmpPoint2D);
         }
 

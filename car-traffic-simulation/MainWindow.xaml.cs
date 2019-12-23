@@ -41,13 +41,18 @@ namespace car_traffic_simulation
         Environment environment;
         EnvironmentEngine engine;
         DispatcherTimer timer = new DispatcherTimer();
+        DispatcherTimer dataGridTimer = new DispatcherTimer();
         Dictionary<int, Rectangle> rectangles = new Dictionary<int, Rectangle>();
+        DataWindow dataWindow;
 
         public MainWindow()
         {   
             var handle = NativeMethods.GetConsoleWindow();
 
             InitializeComponent();
+
+            dataWindow = new DataWindow();
+            dataWindow.Show();
 
             environment = new Environment();
             environment.LoadExampleEnvironment();
@@ -62,6 +67,10 @@ namespace car_traffic_simulation
             timer.Tick += Render;
             timer.Interval = new TimeSpan(0, 0, 0, 0, 10);
             timer.Start();
+
+            dataGridTimer.Tick += ReloadDataGrid;
+            dataGridTimer.Interval = new TimeSpan(0, 0, 0, 2);
+            dataGridTimer.Start();
         }
 
         public void Render(object sender, EventArgs e)
@@ -73,9 +82,14 @@ namespace car_traffic_simulation
             }            
         }
 
+        public void ReloadDataGrid(object sender, EventArgs e)
+        {
+            dataWindow.reloadData(engine);
+        }
+
         public void GenerateRoads()
         {
-            foreach(var road in environment.roadRepository.Roads)
+            foreach(var road in environment.roadRepository.RoadTextures)
             {
                 Canvas.SetTop(road.image, road.Position.Y);
                 Canvas.SetLeft(road.image, road.Position.X);
@@ -90,11 +104,11 @@ namespace car_traffic_simulation
             {
                 var myRect = new Rectangle
                 {
-                    Stroke = Brushes.White,
+                    Stroke = Brushes.LightGreen,
                     StrokeThickness = 2
                 };
-                myRect.Height = 5;
-                myRect.Width = 5;
+                myRect.Height = 20;
+                myRect.Width = 20;
 
                 rectangles.Add(key: vehicle.ID, value: myRect);
 
@@ -126,10 +140,11 @@ namespace car_traffic_simulation
             Vehicles.Children.Clear();
             environment.vehicleRepository.Vehicles.Clear();
             rectangles.Clear();
+            environment.intersections.Clear();
 
             environment.vehicleRepository.LoadFromXml("../../data/Vehicles.xml", environment.edgePipes);
             GenerateVehicles();
-
+            environment.intersections = environment.intersectionRepository.LoadAndGet("../../data/Intersections.xml", environment.edgePipes);
             engine.Start();
         }
     }
