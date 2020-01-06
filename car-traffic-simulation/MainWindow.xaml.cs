@@ -16,8 +16,9 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.Runtime.InteropServices;
 using car_traffic_simulation.engines;
-using Environment = car_traffic_simulation.engines.Environment;
-using car_traffic_simulation.parsers;
+using SimulationState = car_traffic_simulation.engines.SimulationState;
+using car_traffic_simulation.spawners;
+using car_traffic_simulation.repositories;
 
 namespace car_traffic_simulation
 {
@@ -26,38 +27,25 @@ namespace car_traffic_simulation
     /// </summary>
     public partial class MainWindow : Window
     {
-        static class NativeMethods
-        {
-            [DllImport("kernel32.dll")]
-            public static extern IntPtr GetConsoleWindow();
-
-            [DllImport("user32.dll")]
-            public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-
-            public const int SW_HIDE = 0;
-            public const int SW_SHOW = 5;
-        }
-
-        Environment environment;
-        EnvironmentEngine engine;
-        DispatcherTimer timer = new DispatcherTimer();
-        DispatcherTimer dataGridTimer = new DispatcherTimer();
-        Dictionary<int, Rectangle> rectangles = new Dictionary<int, Rectangle>();
-        DataWindow dataWindow;
+        private SimulationState state;
+        private SimulationCoordinator engine;
+        private DispatcherTimer timer = new DispatcherTimer();
+        private DispatcherTimer dataGridTimer = new DispatcherTimer();
+        private Dictionary<int, Rectangle> rectangles = new Dictionary<int, Rectangle>();
+        private Dictionary<int, Button> buttons = new Dictionary<int, Button>();
+        private DataWindow dataWindow;
 
         public MainWindow()
         {   
-            var handle = NativeMethods.GetConsoleWindow();
-
             InitializeComponent();
 
             dataWindow = new DataWindow();
             dataWindow.Show();
 
-            environment = new Environment();
-            environment.LoadExampleEnvironment();
+            state = SimulationState.GetState();
+            state.LoadExamplestate();
 
-            engine = new EnvironmentEngine(environment);
+            engine = new SimulationCoordinator(state);
 
             GenerateRoads();
             GenerateVehicles();
@@ -75,21 +63,18 @@ namespace car_traffic_simulation
 
         public void Render(object sender, EventArgs e)
         {
-            foreach (var vehicle in environment.vehicleRepository.Vehicles)
+            foreach (var vehicle in state.vehicles)
             {
-                Canvas.SetTop(rectangles[vehicle.ID], vehicle.Position.Y);
-                Canvas.SetLeft(rectangles[vehicle.ID], vehicle.Position.X);
-            }            
+                Canvas.SetTop(buttons[vehicle.ID], vehicle.Position.Y - 10);
+                Canvas.SetLeft(buttons[vehicle.ID], vehicle.Position.X - 10);
+            }
         }
 
-        public void ReloadDataGrid(object sender, EventArgs e)
-        {
-            dataWindow.reloadData(engine);
-        }
+        public void ReloadDataGrid(object sender, EventArgs e) => dataWindow.reloadData(engine);
 
         public void GenerateRoads()
         {
-            foreach(var road in environment.roadRepository.RoadTextures)
+            foreach(var road in state.roadTextures)
             {
                 Canvas.SetTop(road.image, road.Position.Y);
                 Canvas.SetLeft(road.image, road.Position.X);
@@ -100,51 +85,50 @@ namespace car_traffic_simulation
 
         public void GenerateVehicles()
         {
-            foreach (var vehicle in environment.vehicleRepository.Vehicles)
+            foreach (var vehicle in state.vehicles)
             {
-                var myRect = new Rectangle
-                {
-                    Stroke = Brushes.LightGreen,
-                    StrokeThickness = 2
-                };
-                myRect.Height = 20;
-                myRect.Width = 20;
+                var button = new Button();
+                button.Height = 20;
+                button.Width = 20;
+                button.Content += vehicle.ID.ToString().Length == 1 ? "0" + vehicle.ID.ToString() : vehicle.ID.ToString();
+                button.FontWeight = FontWeights.Bold;
 
-                rectangles.Add(key: vehicle.ID, value: myRect);
+                buttons.Add(key: vehicle.ID, value: button);
 
                 Canvas.SetTop(vehicle.image, vehicle.Position.Y);
                 Canvas.SetLeft(vehicle.image, vehicle.Position.X);
 
-                Canvas.SetTop(rectangles[vehicle.ID], vehicle.Position.Y);
-                Canvas.SetLeft(rectangles[vehicle.ID], vehicle.Position.X);
+                Canvas.SetTop(buttons[vehicle.ID], vehicle.Position.Y - 10);
+                Canvas.SetLeft(buttons[vehicle.ID], vehicle.Position.X - 10);
 
                 Vehicles.Children.Add(vehicle.image);
-                Vehicles.Children.Add(myRect);
+                Vehicles.Children.Add(button);
             }
         }
 
-        private void StartButton_Click(object sender, RoutedEventArgs e)
-        {
-            engine.Start();
-        }
+        private void StartButton_Click(object sender, RoutedEventArgs e) => engine.Start();
 
-        private void StopButton_Click(object sender, RoutedEventArgs e)
-        {
-            engine.Stop();
-        }
+        private void StopButton_Click(object sender, RoutedEventArgs e) => engine.Stop();
 
         private void RestartButton_Click(object sender, RoutedEventArgs e)
         {
             engine.Stop();
 
             Vehicles.Children.Clear();
-            environment.vehicleRepository.Vehicles.Clear();
+            state.vehicles.Clear();
             rectangles.Clear();
-            environment.intersections.Clear();
+            state.intersections.Clear();
 
-            environment.vehicleRepository.LoadFromXml("../../data/Vehicles.xml", environment.edgePipes);
+            state.vehicles = VehicleRepository
+                .InitializeVehicleRepository()
+                .GetAllFromFile("../../data/Vehicles.xml", state.edgePipes);
+
+            state.intersections = IntersectionRepository
+                .InitializeIntersectionRepository()
+                .GetAllFromFile("../../data/Intersections.xml", state.edgePipes);
+
             GenerateVehicles();
-            environment.intersections = environment.intersectionRepository.LoadAndGet("../../data/Intersections.xml", environment.edgePipes);
+
             engine.Start();
         }
     }

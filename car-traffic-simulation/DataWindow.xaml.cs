@@ -21,33 +21,35 @@ namespace car_traffic_simulation
     /// </summary>
     public partial class DataWindow : Window
     {
+        private bool alreadyReloaded = false;
+        List<VehicleData> vehicles;
+        List<IntersectionData> intersections;
         public DataWindow()
         {
             InitializeComponent();
         }
 
-        public void reloadData(EnvironmentEngine engine)
+        public void reloadData(SimulationCoordinator engine)
         {
-            List<VehicleData> vehicles = new List<VehicleData>();
-            foreach (var vehicle in engine.state.vehicleRepository.Vehicles)
+            vehicles = new List<VehicleData>();
+            foreach (var vehicle in engine.state.vehicles)
             {
-                vehicles.Add(new VehicleData(vehicle.ID, vehicle.Position.X, vehicle.Position.Y));
+                vehicles.Add(new VehicleData(vehicle.ID, vehicle.Position.X, vehicle.Position.Y, vehicle.GetStateToStr(vehicle.State)));
             }
 
             vehicleDataGrid.ItemsSource = vehicles;
 
-            List<IntersectionData> intersections = new List<IntersectionData>();
+            intersections = new List<IntersectionData>();
 
             foreach (var intersection in engine.state.intersections)
             {
                 intersections.Add(
-                    new IntersectionData(
-                        intersection.ID,
-                        intersection.CurrentVehicle == null ? -1 : intersection.CurrentVehicle.ID,
-                        engine.state.vehicleRepository.Vehicles.Where(v => v.CurrentIntersectionID == intersection.ID).Count()));
+                    new IntersectionData(intersection.ID, intersection.CurrentVehicle == null ? -1 : intersection.CurrentVehicle.ID,
+                        engine.state.vehicles.Where(v => v.CurrentIntersectionID == intersection.ID).Count()));
             }
 
             intersectionDataGrid.ItemsSource = intersections;
+            alreadyReloaded = true;
         }
     }
 }

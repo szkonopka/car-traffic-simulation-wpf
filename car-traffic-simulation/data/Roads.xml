@@ -77,9 +77,9 @@
         </edgeRoad>
         <edgeRoad>
           <id>7</id>
-          <fromX>1515</fromX>
+          <fromX>1570</fromX>
           <fromY>710</fromY>
-          <toX>1515</toX>
+          <toX>1570</toX>
           <toY>390</toY>
           <width>50</width>
         </edgeRoad>
@@ -203,9 +203,9 @@
         </edgeRoad>
         <edgeRoad>
           <id>19</id>
-          <fromX>1515</fromX>
+          <fromX>1570</fromX>
           <fromY>170</fromY>
-          <toX>1515</toX>
+          <toX>1570</toX>
           <toY>0</toY>
           <width>50</width>
         </edgeRoad>

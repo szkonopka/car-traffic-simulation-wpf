@@ -76,8 +76,9 @@
     <Compile Include="DataWindow.xaml.cs">
       <DependentUpon>DataWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="engines\Environment.cs" />
-    <Compile Include="engines\EnvironmentEngine.cs" />
+    <Compile Include="objects\RenderedObject.cs" />
+    <Compile Include="simulation\SimulationState.cs" />
+    <Compile Include="simulation\SimulationCoordinator.cs" />
     <Compile Include="models\IntersectionData.cs" />
     <Compile Include="models\VehicleData.cs" />
     <Compile Include="objects\EdgePipe.cs" />
@@ -85,8 +86,6 @@
     <Compile Include="objects\Intersection.cs" />
     <Compile Include="objects\Point2D.cs" />
     <Compile Include="objects\Road.cs" />
-    <Compile Include="objects\Verticle.cs" />
-    <Compile Include="parsers\GraphXmlParser.cs" />
     <Compile Include="repositories\IntersectionRepository.cs" />
     <Compile Include="repositories\RoadRepository.cs" />
     <Compile Include="repositories\VehicleRepository.cs" />
@@ -177,6 +176,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="data\Roads.org.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="objects\render\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

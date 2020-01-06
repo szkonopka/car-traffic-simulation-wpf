@@ -50,9 +50,9 @@ namespace car_traffic_simulation.objects
                 Connectors.Add(new Point2D(pipe.From.X, pipe.From.Y));
         }
 
-        public void act(car_traffic_simulation.engines.Environment environment)
+        public void act(car_traffic_simulation.engines.SimulationState state)
         {
-            foreach (var vehicle in environment.vehicleRepository.Vehicles)
+            foreach (var vehicle in state.vehicles)
             {
                 if (vehicle.State == State.Move || vehicle.State == State.OnIntersection)
                     continue;
@@ -65,12 +65,16 @@ namespace car_traffic_simulation.objects
 
                 if (vehicle.State == State.ReadyToLeaveIntersection && Queue.Contains(vehicle))
                 {
-                    vehicle.CurrentEdge = environment.edgePipes.FirstOrDefault(ep => ep.Edges.Any(e => e.ID == vehicle.NextEdge.ID)).Edges.FirstOrDefault(e => e.ID == vehicle.NextEdge.ID);
+                    vehicle.CurrentEdge = state.edgePipes
+                        .FirstOrDefault(ep => ep.Edges.Any(e => e.ID == vehicle.NextEdge.ID)).Edges
+                        .FirstOrDefault(e => e.ID == vehicle.NextEdge.ID);
+
                     vehicle.Position.X = vehicle.CurrentEdge.From.X;
                     vehicle.Position.Y = vehicle.CurrentEdge.From.Y;
                     vehicle.NewPositionY = vehicle.Position.Y;
                     vehicle.NewPositionX = vehicle.Position.X;
                     vehicle.State = State.Move;
+
                     Queue.Remove(vehicle);
                     IsBusy = false;
                 }

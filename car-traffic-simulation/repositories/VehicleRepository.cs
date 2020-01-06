@@ -1,5 +1,4 @@
 ﻿using car_traffic_simulation.objects;
-using car_traffic_simulation.parsers;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -10,10 +9,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Xml;
 using System.Xml.Linq;
-using Action = car_traffic_simulation.objects.Action;
 
 namespace car_traffic_simulation.spawners
 {
+    using VehicleList = List<Vehicle>;
+
     public class VehicleInfo
     {
         private readonly string ROTATION90 = "90", ROTATION270 = "270", ROTATION180 = "180";
@@ -49,13 +49,9 @@ namespace car_traffic_simulation.spawners
         private readonly string EDGE_ROAD_ID_ELEM = "edgeRoadId";
         private readonly string ROTATION_ELEM = "rotation";
 
-        public int CurrentVehicleIndex { get; set; } = 0;
-        public List<Vehicle> Vehicles { get; set; }
+        public static VehicleRepository InitializeVehicleRepository() => new VehicleRepository();
 
-        public VehicleRepository()
-        {
-            Vehicles = new List<Vehicle>();
-        }
+        public VehicleRepository() { }
 
         private BitmapImage PrepareCarImage(VehicleInfo vehicleInfoIndex, int width, int height)
         {
@@ -73,11 +69,9 @@ namespace car_traffic_simulation.spawners
             return bitmapImage;
         }
 
-        public void GenerateCar(VehicleInfo vehicleInfo, int id, int x, int y, int velocity, int height, int width, EdgeRoad edgeRoad)
+        public Vehicle PrepareCar(VehicleInfo vehicleInfo, int id, int x, int y, int velocity, int height, int width, EdgeRoad edgeRoad)
         {
             var vehicle = new Vehicle(id, x, y, velocity, height, width, edgeRoad);
-
-            vehicle.decideAction();
 
             if (edgeRoad.Direction == CardinalDirection.North || edgeRoad.Direction == CardinalDirection.South)
             {
@@ -93,10 +87,11 @@ namespace car_traffic_simulation.spawners
             }
 
             vehicle.URI = vehicleInfo.ImgUrl;
-            Vehicles.Add(vehicle);
+
+            return vehicle;
         }
 
-        public void LoadFromXml(string filePath, List<EdgePipe> edgePipes)
+        public void LoadAllFromXmlFileToList(string filePath, List<EdgePipe> edgePipes, ref VehicleList vehicles)
         {
             XDocument doc = XDocument.Load(filePath);
 
@@ -115,8 +110,18 @@ namespace car_traffic_simulation.spawners
                 string texturePath = vehicleNode.Element(TEXTURE_ELEM).Value.ToString();
                 string rotation = vehicleNode.Element(ROTATION_ELEM).Value.ToString();
 
-                GenerateCar(new VehicleInfo(texturePath, rotation), id, offsetX, offsetY, velocity, height, width, edgePipes[edgePipeId].Edges[edgeRoadId]);
+                vehicles.Add(PrepareCar(
+                    new VehicleInfo(texturePath, rotation), id, offsetX, offsetY, velocity, height, width, edgePipes[edgePipeId].Edges[edgeRoadId]));
             }
+        }
+
+        public VehicleList GetAllFromFile(string filePath, List<EdgePipe> edgePipes)
+        {
+            VehicleList vehicles = new VehicleList();
+
+            LoadAllFromXmlFileToList(filePath, edgePipes, ref vehicles);
+
+            return vehicles;
         }
     }
 }

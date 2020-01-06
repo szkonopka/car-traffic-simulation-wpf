@@ -58,11 +58,11 @@ namespace car_traffic_simulation.objects
 
                 if (fromY < toY)
                 {
-                    Direction = CardinalDirection.North;
+                    Direction = CardinalDirection.South;
                 }
                 else
                 {
-                    Direction = CardinalDirection.South;
+                    Direction = CardinalDirection.North;
                 }
 
                 return true;
