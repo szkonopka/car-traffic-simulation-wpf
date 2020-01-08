@@ -5,7 +5,7 @@
     <type>Car</type>
     <velocity>3</velocity>
     <width>70</width>
-    <height>35</height>
+    <height>39</height>
     <offsetX>0</offsetX>
     <offsetY>0</offsetY>
     <texturePath>assets/blue-car.png</texturePath>
@@ -18,7 +18,7 @@
     <type>Car</type>
     <velocity>2</velocity>
     <width>70</width>
-    <height>35</height>
+    <height>39</height>
     <offsetX>140</offsetX>
     <offsetY>0</offsetY>
     <texturePath>assets/green-car.png</texturePath>
@@ -31,7 +31,7 @@
     <type>Car</type>
     <velocity>1</velocity>
     <width>70</width>
-    <height>35</height>
+    <height>39</height>
     <offsetX>280</offsetX>
     <offsetY>0</offsetY>
     <texturePath>assets/green-car.png</texturePath>
@@ -44,7 +44,7 @@
     <type>Car</type>
     <velocity>1</velocity>
     <width>70</width>
-    <height>35</height>
+    <height>39</height>
     <offsetX>0</offsetX>
     <offsetY>0</offsetY>
     <texturePath>assets/blue-car.png</texturePath>
@@ -57,7 +57,7 @@
     <type>Car</type>
     <velocity>2</velocity>
     <width>70</width>
-    <height>35</height>
+    <height>39</height>
     <offsetX>0</offsetX>
     <offsetY>0</offsetY>
     <texturePath>assets/green-car.png</texturePath>
@@ -70,7 +70,7 @@
     <type>Car</type>
     <velocity>3</velocity>
     <width>70</width>
-    <height>35</height>
+    <height>39</height>
     <offsetX>0</offsetX>
     <offsetY>0</offsetY>
     <texturePath>assets/blue-car.png</texturePath>
@@ -83,7 +83,7 @@
     <type>Car</type>
     <velocity>2</velocity>
     <width>70</width>
-    <height>35</height>
+    <height>39</height>
     <offsetX>-140</offsetX>
     <offsetY>0</offsetY>
     <texturePath>assets/green-car.png</texturePath>
@@ -96,7 +96,7 @@
     <type>Car</type>
     <velocity>1</velocity>
     <width>70</width>
-    <height>35</height>
+    <height>39</height>
     <offsetX>-320</offsetX>
     <offsetY>0</offsetY>
     <texturePath>assets/blue-car.png</texturePath>
@@ -109,7 +109,7 @@
     <type>Car</type>
     <velocity>1</velocity>
     <width>70</width>
-    <height>35</height>
+    <height>39</height>
     <offsetX>100</offsetX>
     <offsetY>0</offsetY>
     <texturePath>assets/green-car.png</texturePath>
@@ -122,7 +122,7 @@
     <type>Car</type>
     <velocity>4</velocity>
     <width>70</width>
-    <height>35</height>
+    <height>39</height>
     <offsetX>0</offsetX>
     <offsetY>100</offsetY>
     <texturePath>assets/green-car.png</texturePath>
@@ -135,7 +135,7 @@
     <type>Car</type>
     <velocity>2</velocity>
     <width>70</width>
-    <height>35</height>
+    <height>39</height>
     <offsetX>0</offsetX>
     <offsetY>0</offsetY>
     <texturePath>assets/blue-car.png</texturePath>
@@ -148,7 +148,7 @@
     <type>Car</type>
     <velocity>1</velocity>
     <width>70</width>
-    <height>35</height>
+    <height>39</height>
     <offsetX>0</offsetX>
     <offsetY>0</offsetY>
     <texturePath>assets/green-car.png</texturePath>
@@ -161,9 +161,9 @@
     <type>Car</type>
     <velocity>1</velocity>
     <width>70</width>
-    <height>35</height>
+    <height>39</height>
     <offsetX>0</offsetX>
-    <offsetY>-140</offsetY>
+    <offsetY>-250</offsetY>
     <texturePath>assets/green-car.png</texturePath>
     <rotation>180</rotation>
     <edgePipeId>3</edgePipeId>
@@ -174,9 +174,9 @@
     <type>Car</type>
     <velocity>2</velocity>
     <width>70</width>
-    <height>35</height>
+    <height>39</height>
     <offsetX>0</offsetX>
-    <offsetY>-220</offsetY>
+    <offsetY>-140</offsetY>
     <texturePath>assets/green-car.png</texturePath>
     <rotation>180</rotation>
     <edgePipeId>3</edgePipeId>

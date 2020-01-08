@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace car_traffic_simulation.models
 {
-    struct IntersectionData
+    struct EdgeRoadData
     {
         public int ID { get; set; }
-        public int? CurrentCar { get; set; }
-        public int? AwaitingCars { get; set; }
-        public String AwaitingCarsIdListStr { get; set; }
+        public int Cars { get; set; }
+        public String CarsIdListStr { get; set; }
     }
 }

@@ -10,45 +10,11 @@ using System.Xml.Linq;
 
 namespace car_traffic_simulation.spawners
 {
-    /*
-    public class RoadRepository
-    {
-        
-
-        public RoadRepository()
-        {
-            Roads = new List<Road>();
-        }
-
-        public void LoadRoadsFromXml(string filePath)
-        {
-            XmlDocument xml = new XmlDocument();
-
-            xml.Load(filePath);
-
-            foreach (XmlNode node in xml.DocumentElement)
-            {
-
-            }
-        }
-
-        public void LoadExampleRoadMap()
-        {
-            //var road = new Road("", 1366, 241, 0, 138);
-            var road = new Road("", 1866, 941, 0, 0);
-
-            road.image.Source = new BitmapImage(new Uri("..\\..\\" + @"assets/straight-road.png", UriKind.Relative));
-
-            Roads.Add(road);
-        }
-    }
-    */
+    using EdgePipeList = List<EdgePipe>;
+    using RoadTextureList = List<RoadTexture>;
 
     public class RoadRepository
     {
-        private List<EdgePipe> edgePipeList;
-        public List<Road> RoadTextures { get; set; }
-
         private readonly string ID_ELEM = "id";
         private readonly string EDGE_PIPE_ELEM = "edgePipe";
         private readonly string EDGE_ROAD_ELEM = "edgeRoad";
@@ -58,34 +24,24 @@ namespace car_traffic_simulation.spawners
         private readonly string TO_Y_ELEM = "toY";
         private readonly string WIDTH_ELEM = "width";
 
-        public RoadRepository()
+        public static RoadRepository InitializeRoadRepository() => new RoadRepository();
+
+        public RoadRepository() { }
+
+        public RoadTextureList GetOneRoadTextureMap(string texturePath)
         {
-            RoadTextures = new List<Road>();
-            edgePipeList = new List<EdgePipe>();
+            RoadTextureList roadTextures = new RoadTextureList();
+
+            var road = new RoadTexture("", 1866, 941, 0, 0);
+
+            road.image.Source = new BitmapImage(new Uri("..\\..\\" + @texturePath, UriKind.Relative));
+
+            roadTextures.Add(road);
+
+            return roadTextures;
         }
 
-        public void LoadRoadsFromXml(string filePath)
-        {
-            XmlDocument xml = new XmlDocument();
-
-            xml.Load(filePath);
-
-            foreach (XmlNode node in xml.DocumentElement)
-            {
-
-            }
-        }
-
-        public void LoadExampleRoadMap()
-        {
-            var road = new Road("", 1866, 941, 0, 0);
-
-            road.image.Source = new BitmapImage(new Uri("..\\..\\" + @"assets/straight-road.png", UriKind.Relative));
-
-            RoadTextures.Add(road);
-        }
-
-        private void Load(string filePath)
+        private void LoadAllFromXmlFileToList(string filePath, ref EdgePipeList edgePipes)
         {
             XDocument doc = XDocument.Load(filePath);
 
@@ -97,7 +53,7 @@ namespace car_traffic_simulation.spawners
 
                 var edgeRoadsNode = from eR in edgePipeNode.Descendants(EDGE_ROAD_ELEM) select eR;
 
-                AddEdgePipe(edgePipeId);
+                AddEdgePipe(edgePipeId, ref edgePipes);
 
                 foreach (XElement edgeRoadNode in edgeRoadsNode)
                 {
@@ -105,32 +61,42 @@ namespace car_traffic_simulation.spawners
 
                     AddEdgeRoad(edgePipeId, edgeRoadId,
                         Int32.Parse(edgeRoadNode.Element(WIDTH_ELEM).Value), Int32.Parse(edgeRoadNode.Element(FROM_X_ELEM).Value),
-                        Int32.Parse(edgeRoadNode.Element(FROM_Y_ELEM).Value), Int32.Parse(edgeRoadNode.Element(TO_X_ELEM).Value), Int32.Parse(edgeRoadNode.Element(TO_Y_ELEM).Value));
+                        Int32.Parse(edgeRoadNode.Element(FROM_Y_ELEM).Value), Int32.Parse(edgeRoadNode.Element(TO_X_ELEM).Value), 
+                        Int32.Parse(edgeRoadNode.Element(TO_Y_ELEM).Value), ref edgePipes);
                 }
             }
         }
 
-        private void AddEdgeRoad(int edgePipeID, int edgeRoadID, int width, int fromX, int fromY, int toX, int toY)
+        private void AddEdgeRoad(int edgePipeID, int edgeRoadID, int width, int fromX, int fromY, int toX, int toY, ref EdgePipeList edgePipes)
         {
-            if (edgePipeList.ElementAt(edgePipeID) == null)
+            if (edgePipes.ElementAt(edgePipeID) == null)
                 return;
 
-            edgePipeList[edgePipeID].AddEdgeRoad(edgeRoadID, width, fromX, fromY, toX, toY);
+            var ers = edgePipes.SelectMany(ep => ep.Edges);
+            var fer = ers.FirstOrDefault(er => (er.From.X == fromX && er.To.X == toX) && (er.From.Y == fromY && er.To.Y == toY));
+
+            if (ers.Any(er => (er.From.X == fromX && er.To.X == toX) && (er.From.Y == fromY && er.To.Y == toY)))
+            {
+                Console.WriteLine("New ID: " + edgeRoadID + " fromX: " + fromX + " toX: " + toX + " fromY: " + fromY + " toY: " + toY);
+                throw new Exception("Edge already exists ID: " + fer.ID + " fromX: " + fer.From.X + " toX: " + fer.To.X + " fromY: " + fer.From.Y + " toY: " + fer.To.Y);
+            }
+                
+
+            edgePipes[edgePipeID].AddEdgeRoad(edgeRoadID, width, fromX, fromY, toX, toY);
         }
 
-        private void AddEdgePipe(int id)
+        private void AddEdgePipe(int id, ref EdgePipeList edgePipes)
         {
-            edgePipeList.Add(new EdgePipe(id));
+            edgePipes.Add(new EdgePipe(id));
         }
 
-        public List<EdgePipe> LoadAndGet(string filePath, bool clearState = false)
+        public EdgePipeList GetAllFromFile(string filePath)
         {
-            if (clearState)
-                edgePipeList.Clear();
+            EdgePipeList edgePipes = new EdgePipeList();
 
-            Load(filePath);
+            LoadAllFromXmlFileToList(filePath, ref edgePipes);
 
-            return edgePipeList;
+            return edgePipes;
         }
     }
 

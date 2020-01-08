@@ -16,8 +16,9 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.Runtime.InteropServices;
 using car_traffic_simulation.engines;
-using Environment = car_traffic_simulation.engines.Environment;
-using car_traffic_simulation.parsers;
+using SimulationState = car_traffic_simulation.engines.SimulationState;
+using car_traffic_simulation.spawners;
+using car_traffic_simulation.repositories;
 
 namespace car_traffic_simulation
 {
@@ -26,126 +27,108 @@ namespace car_traffic_simulation
     /// </summary>
     public partial class MainWindow : Window
     {
-        static class NativeMethods
-        {
-            [DllImport("kernel32.dll")]
-            public static extern IntPtr GetConsoleWindow();
-
-            [DllImport("user32.dll")]
-            public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-
-            public const int SW_HIDE = 0;
-            public const int SW_SHOW = 5;
-        }
-
-        Environment environment;
-        EnvironmentEngine engine;
-        DispatcherTimer timer = new DispatcherTimer();
-        DispatcherTimer dataGridTimer = new DispatcherTimer();
-        Dictionary<int, Rectangle> rectangles = new Dictionary<int, Rectangle>();
-        DataWindow dataWindow;
-
+        private SimulationState state;
+        private SimulationCoordinator coordinator;
+        private DispatcherTimer timer = new DispatcherTimer();
+        private DispatcherTimer dataGridTimer = new DispatcherTimer();
+        private Dictionary<int, Button> vehicleLabelButtons = new Dictionary<int, Button>();
+        private DataWindow dataWindow;
+        private readonly int LABEL_BTN_SIZE = 20;
         public MainWindow()
         {   
-            var handle = NativeMethods.GetConsoleWindow();
-
             InitializeComponent();
 
             dataWindow = new DataWindow();
             dataWindow.Show();
 
-            environment = new Environment();
-            environment.LoadExampleEnvironment();
+            state = SimulationState.GetState();
+            state.LoadExamplestate();
 
-            engine = new EnvironmentEngine(environment);
+            coordinator = new SimulationCoordinator(state);
 
             GenerateRoads();
             GenerateVehicles();
-
-            engine.Start();
+            
+            coordinator.Start();
 
             timer.Tick += Render;
             timer.Interval = new TimeSpan(0, 0, 0, 0, 10);
             timer.Start();
 
             dataGridTimer.Tick += ReloadDataGrid;
-            dataGridTimer.Interval = new TimeSpan(0, 0, 0, 2);
+            dataGridTimer.Interval = new TimeSpan(0, 0, 0, 1);
             dataGridTimer.Start();
+        }
+
+        private void drawOnCanvas(int topOffset, int leftOffset, UIElement controlObject)
+        {
+            Canvas.SetTop(controlObject, topOffset);
+            Canvas.SetLeft(controlObject, leftOffset);
         }
 
         public void Render(object sender, EventArgs e)
         {
-            foreach (var vehicle in environment.vehicleRepository.Vehicles)
-            {
-                Canvas.SetTop(rectangles[vehicle.ID], vehicle.Position.Y);
-                Canvas.SetLeft(rectangles[vehicle.ID], vehicle.Position.X);
-            }            
+            foreach (var vehicle in state.vehicles)
+                drawOnCanvas(vehicle.Position.Y - 10, vehicle.Position.X - 10, vehicleLabelButtons[vehicle.ID]);
         }
 
-        public void ReloadDataGrid(object sender, EventArgs e)
-        {
-            dataWindow.reloadData(engine);
-        }
+        public void ReloadDataGrid(object sender, EventArgs e) => dataWindow.reloadData(state);
 
         public void GenerateRoads()
         {
-            foreach(var road in environment.roadRepository.RoadTextures)
+            foreach(var road in state.roadTextures)
             {
-                Canvas.SetTop(road.image, road.Position.Y);
-                Canvas.SetLeft(road.image, road.Position.X);
-
+                drawOnCanvas(road.Position.X, road.Position.Y, road.image);
                 Roads.Children.Add(road.image);
             }
         }
 
         public void GenerateVehicles()
         {
-            foreach (var vehicle in environment.vehicleRepository.Vehicles)
+            foreach (var vehicle in state.vehicles)
             {
-                var myRect = new Rectangle
+                var button = new Button
                 {
-                    Stroke = Brushes.LightGreen,
-                    StrokeThickness = 2
+                    Height = LABEL_BTN_SIZE,
+                    Width = LABEL_BTN_SIZE,
+                    Content = vehicle.ID.ToString().Length == 1 ? "0" + vehicle.ID.ToString() : vehicle.ID.ToString(),
+                    FontWeight = FontWeights.Bold
                 };
-                myRect.Height = 20;
-                myRect.Width = 20;
+                
+                vehicleLabelButtons.Add(key: vehicle.ID, value: button);
 
-                rectangles.Add(key: vehicle.ID, value: myRect);
-
-                Canvas.SetTop(vehicle.image, vehicle.Position.Y);
-                Canvas.SetLeft(vehicle.image, vehicle.Position.X);
-
-                Canvas.SetTop(rectangles[vehicle.ID], vehicle.Position.Y);
-                Canvas.SetLeft(rectangles[vehicle.ID], vehicle.Position.X);
+                drawOnCanvas(vehicle.Position.Y - LABEL_BTN_SIZE / 2, vehicle.Position.X, vehicle.image);
+                drawOnCanvas(vehicle.Position.Y - LABEL_BTN_SIZE / 2, vehicle.Position.X, vehicleLabelButtons[vehicle.ID]);
 
                 Vehicles.Children.Add(vehicle.image);
-                Vehicles.Children.Add(myRect);
+                Vehicles.Children.Add(button);
             }
         }
 
-        private void StartButton_Click(object sender, RoutedEventArgs e)
-        {
-            engine.Start();
-        }
+        private void StartButton_Click(object sender, RoutedEventArgs e) => coordinator.Start();
 
-        private void StopButton_Click(object sender, RoutedEventArgs e)
-        {
-            engine.Stop();
-        }
+        private void StopButton_Click(object sender, RoutedEventArgs e) => coordinator.Stop();
 
         private void RestartButton_Click(object sender, RoutedEventArgs e)
         {
-            engine.Stop();
+            coordinator.Stop();
 
+            state.vehicles.Clear();
+            state.intersections.Clear();
+            vehicleLabelButtons.Clear();
             Vehicles.Children.Clear();
-            environment.vehicleRepository.Vehicles.Clear();
-            rectangles.Clear();
-            environment.intersections.Clear();
 
-            environment.vehicleRepository.LoadFromXml("../../data/Vehicles.xml", environment.edgePipes);
+            state.vehicles = VehicleRepository
+                .InitializeVehicleRepository()
+                .GetAllFromFile("../../data/Vehicles.xml", state.edgePipes);
+
+            state.intersections = IntersectionRepository
+                .InitializeIntersectionRepository()
+                .GetAllFromFile("../../data/Intersections.xml", state.edgePipes);
+
             GenerateVehicles();
-            environment.intersections = environment.intersectionRepository.LoadAndGet("../../data/Intersections.xml", environment.edgePipes);
-            engine.Start();
+
+            coordinator.Start();
         }
     }
 }

@@ -6,8 +6,12 @@ using System.Threading.Tasks;
 
 namespace car_traffic_simulation.objects
 {
-    class Verticle
+    public enum VehicleState
     {
-        public Point2D Position { get; set; }
-    }
+        InIntersectionQueue,
+        OnIntersection,
+        ReadyToLeaveIntersection,
+        Move,
+        NoIntersection
+    };
 }

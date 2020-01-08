@@ -1,13 +1,14 @@
-﻿using car_traffic_simulation.objects;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Linq;
+using car_traffic_simulation.objects;
 
 namespace car_traffic_simulation.repositories
 {
+    using IntersectionList = List<Intersection>;
+    using EdgePipeList = List<EdgePipe>;
+
     public class IntersectionRepository
     {
         private readonly string INTERSECTIONS_ELEM = "intersection";
@@ -15,12 +16,9 @@ namespace car_traffic_simulation.repositories
         private readonly string ID_ELEM = "id";
         private readonly string TYPE_ELEM = "type";
 
-        private List<Intersection> intersectionList;
+        public static IntersectionRepository InitializeIntersectionRepository() => new IntersectionRepository();
 
-        public IntersectionRepository()
-        {
-            intersectionList = new List<Intersection>();
-        }
+        public IntersectionRepository() { }
 
         private IntersectionPipeType stringToIntersectionType(string type)
         {
@@ -30,7 +28,7 @@ namespace car_traffic_simulation.repositories
                 return IntersectionPipeType.Out;
         }
 
-        private void Load(string filePath, List<EdgePipe> edgePipes)
+        private void LoadAllFromXmlFileToList(string filePath, EdgePipeList edgePipes, ref IntersectionList intersectionList)
         {
             XDocument doc = XDocument.Load(filePath);
 
@@ -42,7 +40,7 @@ namespace car_traffic_simulation.repositories
 
                 var pipesNode = from p in intersectionNode.Descendants(PIPES_ELEM) select p;
 
-                AddIntersection(intersectionId);
+                intersectionList.Add(new Intersection(intersectionId));
 
                 Console.WriteLine(pipesNode.ToString());
 
@@ -52,27 +50,17 @@ namespace car_traffic_simulation.repositories
                     int pipeId = Int32.Parse(pipeNode.Element(ID_ELEM).Value);
                     string type = pipeNode.Element(TYPE_ELEM).Value.ToString();
                     var roads = (from ep in edgePipes select ep.Edges).SelectMany(e => e);
-                    AddPipeToIntersection(intersectionId, roads.FirstOrDefault(r => r.ID == pipeId), stringToIntersectionType(type));
+
+                    intersectionList[intersectionId].AddPipe(roads.FirstOrDefault(r => r.ID == pipeId), stringToIntersectionType(type));
                 }
             }
         }
 
-        private void AddPipeToIntersection(int intersectionId, EdgeRoad road, IntersectionPipeType type)
+        public IntersectionList GetAllFromFile(string filePath, EdgePipeList edgePipes)
         {
-            intersectionList[intersectionId].AddPipe(road, type);
-        }
+            IntersectionList intersectionList = new IntersectionList();
 
-        private void AddIntersection(int intersectionId)
-        {
-            intersectionList.Add(new Intersection(intersectionId));
-        }
-
-        public List<Intersection> LoadAndGet(string filePath, List<EdgePipe> edgePipes, bool clearState = false)
-        {
-            if (clearState)
-                intersectionList.Clear();
-
-            Load(filePath, edgePipes);
+            LoadAllFromXmlFileToList(filePath, edgePipes, ref intersectionList);
 
             return intersectionList;
         }

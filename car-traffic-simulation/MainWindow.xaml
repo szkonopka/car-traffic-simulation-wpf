@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:car_traffic_simulation"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="1366" SizeToContent="WidthAndHeight">
+        Title="Simulation" Height="600" Width="1366" SizeToContent="WidthAndHeight">
     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
         <Grid x:Name="Content">
             <Canvas Height="941" Width="1866">

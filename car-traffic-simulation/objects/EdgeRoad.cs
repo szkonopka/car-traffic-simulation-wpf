@@ -6,20 +6,6 @@ using System.Threading.Tasks;
 
 namespace car_traffic_simulation.objects
 {
-    public enum CardinalDirection
-    {
-        North,
-        East,
-        South,
-        West
-    }
-
-    public enum MovementAxis
-    {
-        X, 
-        Y
-    };
-
     public class EdgeRoad
     {
         public static readonly Dictionary<CardinalDirection, CardinalDirection> OppositeDirections =
@@ -35,7 +21,6 @@ namespace car_traffic_simulation.objects
         public int PipeID { get; set; }
         public Point2D From { get; set; }
         public Point2D To { get; set; }
-        public MovementAxis MovementAxis { get; set; }
         public CardinalDirection Direction { get; set; }
         public int Width { get; set; }
 
@@ -54,34 +39,13 @@ namespace car_traffic_simulation.objects
         {
             if (fromX == toX && fromY != toY)
             {
-                MovementAxis = MovementAxis.Y;
-
-                if (fromY < toY)
-                {
-                    Direction = CardinalDirection.North;
-                }
-                else
-                {
-                    Direction = CardinalDirection.South;
-                }
-
+                Direction = fromY < toY ? CardinalDirection.South : CardinalDirection.North;
                 return true;
             }
 
-
             if (fromX != toX && fromY == toY)
             {
-                MovementAxis = MovementAxis.X;
-
-                if (fromX < toX)
-                {
-                    Direction = CardinalDirection.East;
-                }
-                else
-                {
-                    Direction = CardinalDirection.West;
-                }
-
+                Direction = fromX < toX ? CardinalDirection.East : CardinalDirection.West;
                 return true;
             }               
 
