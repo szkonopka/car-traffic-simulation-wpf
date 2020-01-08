@@ -28,13 +28,12 @@ namespace car_traffic_simulation
     public partial class MainWindow : Window
     {
         private SimulationState state;
-        private SimulationCoordinator engine;
+        private SimulationCoordinator coordinator;
         private DispatcherTimer timer = new DispatcherTimer();
         private DispatcherTimer dataGridTimer = new DispatcherTimer();
-        private Dictionary<int, Rectangle> rectangles = new Dictionary<int, Rectangle>();
-        private Dictionary<int, Button> buttons = new Dictionary<int, Button>();
+        private Dictionary<int, Button> vehicleLabelButtons = new Dictionary<int, Button>();
         private DataWindow dataWindow;
-
+        private readonly int LABEL_BTN_SIZE = 20;
         public MainWindow()
         {   
             InitializeComponent();
@@ -45,40 +44,41 @@ namespace car_traffic_simulation
             state = SimulationState.GetState();
             state.LoadExamplestate();
 
-            engine = new SimulationCoordinator(state);
+            coordinator = new SimulationCoordinator(state);
 
             GenerateRoads();
             GenerateVehicles();
-
-            engine.Start();
+            
+            coordinator.Start();
 
             timer.Tick += Render;
             timer.Interval = new TimeSpan(0, 0, 0, 0, 10);
             timer.Start();
 
             dataGridTimer.Tick += ReloadDataGrid;
-            dataGridTimer.Interval = new TimeSpan(0, 0, 0, 2);
+            dataGridTimer.Interval = new TimeSpan(0, 0, 0, 1);
             dataGridTimer.Start();
+        }
+
+        private void drawOnCanvas(int topOffset, int leftOffset, UIElement controlObject)
+        {
+            Canvas.SetTop(controlObject, topOffset);
+            Canvas.SetLeft(controlObject, leftOffset);
         }
 
         public void Render(object sender, EventArgs e)
         {
             foreach (var vehicle in state.vehicles)
-            {
-                Canvas.SetTop(buttons[vehicle.ID], vehicle.Position.Y - 10);
-                Canvas.SetLeft(buttons[vehicle.ID], vehicle.Position.X - 10);
-            }
+                drawOnCanvas(vehicle.Position.Y - 10, vehicle.Position.X - 10, vehicleLabelButtons[vehicle.ID]);
         }
 
-        public void ReloadDataGrid(object sender, EventArgs e) => dataWindow.reloadData(engine);
+        public void ReloadDataGrid(object sender, EventArgs e) => dataWindow.reloadData(state);
 
         public void GenerateRoads()
         {
             foreach(var road in state.roadTextures)
             {
-                Canvas.SetTop(road.image, road.Position.Y);
-                Canvas.SetLeft(road.image, road.Position.X);
-
+                drawOnCanvas(road.Position.X, road.Position.Y, road.image);
                 Roads.Children.Add(road.image);
             }
         }
@@ -87,37 +87,36 @@ namespace car_traffic_simulation
         {
             foreach (var vehicle in state.vehicles)
             {
-                var button = new Button();
-                button.Height = 20;
-                button.Width = 20;
-                button.Content += vehicle.ID.ToString().Length == 1 ? "0" + vehicle.ID.ToString() : vehicle.ID.ToString();
-                button.FontWeight = FontWeights.Bold;
+                var button = new Button
+                {
+                    Height = LABEL_BTN_SIZE,
+                    Width = LABEL_BTN_SIZE,
+                    Content = vehicle.ID.ToString().Length == 1 ? "0" + vehicle.ID.ToString() : vehicle.ID.ToString(),
+                    FontWeight = FontWeights.Bold
+                };
+                
+                vehicleLabelButtons.Add(key: vehicle.ID, value: button);
 
-                buttons.Add(key: vehicle.ID, value: button);
-
-                Canvas.SetTop(vehicle.image, vehicle.Position.Y);
-                Canvas.SetLeft(vehicle.image, vehicle.Position.X);
-
-                Canvas.SetTop(buttons[vehicle.ID], vehicle.Position.Y - 10);
-                Canvas.SetLeft(buttons[vehicle.ID], vehicle.Position.X - 10);
+                drawOnCanvas(vehicle.Position.Y - LABEL_BTN_SIZE / 2, vehicle.Position.X, vehicle.image);
+                drawOnCanvas(vehicle.Position.Y - LABEL_BTN_SIZE / 2, vehicle.Position.X, vehicleLabelButtons[vehicle.ID]);
 
                 Vehicles.Children.Add(vehicle.image);
                 Vehicles.Children.Add(button);
             }
         }
 
-        private void StartButton_Click(object sender, RoutedEventArgs e) => engine.Start();
+        private void StartButton_Click(object sender, RoutedEventArgs e) => coordinator.Start();
 
-        private void StopButton_Click(object sender, RoutedEventArgs e) => engine.Stop();
+        private void StopButton_Click(object sender, RoutedEventArgs e) => coordinator.Stop();
 
         private void RestartButton_Click(object sender, RoutedEventArgs e)
         {
-            engine.Stop();
+            coordinator.Stop();
 
-            Vehicles.Children.Clear();
             state.vehicles.Clear();
-            rectangles.Clear();
             state.intersections.Clear();
+            vehicleLabelButtons.Clear();
+            Vehicles.Children.Clear();
 
             state.vehicles = VehicleRepository
                 .InitializeVehicleRepository()
@@ -129,7 +128,7 @@ namespace car_traffic_simulation
 
             GenerateVehicles();
 
-            engine.Start();
+            coordinator.Start();
         }
     }
 }

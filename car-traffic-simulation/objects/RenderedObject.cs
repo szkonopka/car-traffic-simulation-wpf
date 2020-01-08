@@ -7,7 +7,7 @@ namespace car_traffic_simulation.objects
     {
         public Image image;
         public Point2D Position { get; set; }
-        public int ID { get; set; }
+        public int ID { get; protected set; }
         protected int MovementVetorX;
         protected int MovementVetorY;
         protected int Height;

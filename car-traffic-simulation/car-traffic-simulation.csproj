@@ -76,7 +76,11 @@
     <Compile Include="DataWindow.xaml.cs">
       <DependentUpon>DataWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="models\EdgeRoadData.cs" />
+    <Compile Include="objects\CardinalDirection.cs" />
+    <Compile Include="objects\IntersectionPipeType.cs" />
     <Compile Include="objects\RenderedObject.cs" />
+    <Compile Include="objects\VehicleState.cs" />
     <Compile Include="simulation\SimulationState.cs" />
     <Compile Include="simulation\SimulationCoordinator.cs" />
     <Compile Include="models\IntersectionData.cs" />
@@ -167,15 +171,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="data\Vehicles.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="data\Vehicles.org.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="data\Intersections.org.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="data\Roads.org.xml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="objects\render\" />

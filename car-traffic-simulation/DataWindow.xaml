@@ -5,12 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:car_traffic_simulation"
         mc:Ignorable="d"
-        Title="DataWindow" Height="450" Width="800">
+        Title="Data" Height="450" Width="1000">
     <Grid>
-        <DataGrid x:Name="vehicleDataGrid" HorizontalAlignment="Left" Height="384" VerticalAlignment="Top" Width="400" Margin="0,35,0,0"/>
-        <DataGrid x:Name="intersectionDataGrid" HorizontalAlignment="Left" Height="384" Margin="400,35,0,0" VerticalAlignment="Top" Width="400"/>
-        <Label Content="Vehicles" HorizontalAlignment="Left" VerticalAlignment="Top" Height="35" Width="400" FontSize="16"/>
-        <Label Content="Intersections" HorizontalAlignment="Left" VerticalAlignment="Top" Height="35" Width="400" Margin="400,0,-8,0" FontSize="16"/>
+        <DataGrid x:Name="vehicleDataGrid" HorizontalAlignment="Left" Height="384" VerticalAlignment="Top" Width="419" Margin="0,35,0,0"/>
+        <DataGrid x:Name="intersectionDataGrid" HorizontalAlignment="Left" Height="384" Margin="419,35,0,0" VerticalAlignment="Top" Width="297"/>
+        <Label Content="Vehicles" HorizontalAlignment="Left" VerticalAlignment="Top" Height="35" Width="419" FontSize="16"/>
+        <Label Content="Intersections" HorizontalAlignment="Left" VerticalAlignment="Top" Height="35" Width="297" Margin="419,0,0,0" FontSize="16"/>
+        <DataGrid x:Name="roadDataGrid" HorizontalAlignment="Left" Height="384" Margin="716,35,0,0" VerticalAlignment="Top" Width="276"/>
+        <Label Content="Roads" HorizontalAlignment="Left" VerticalAlignment="Top" Height="35" Width="276" Margin="716,0,0,0" FontSize="16"/>
 
     </Grid>
 </Window>

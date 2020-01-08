@@ -6,12 +6,6 @@ using System.Threading.Tasks;
 
 namespace car_traffic_simulation.objects
 {
-    public enum IntersectionPipeType
-    {
-        Out,
-        In
-    }
-
     public class IntersectionPipe
     {
         public IntersectionPipe(EdgeRoad edgeRoad, IntersectionPipeType intersectionType)
@@ -54,16 +48,16 @@ namespace car_traffic_simulation.objects
         {
             foreach (var vehicle in state.vehicles)
             {
-                if (vehicle.State == State.Move || vehicle.State == State.OnIntersection)
+                if (vehicle.State == VehicleState.Move || vehicle.State == VehicleState.OnIntersection)
                     continue;
 
-                if (vehicle.State == State.InIntersectionQueue && !Queue.Contains(vehicle))
+                if (vehicle.State == VehicleState.InIntersectionQueue && !Queue.Contains(vehicle))
                 {
                     if (carOnInput(vehicle))
                         Queue.Add(vehicle);
                 }
 
-                if (vehicle.State == State.ReadyToLeaveIntersection && Queue.Contains(vehicle))
+                if (vehicle.State == VehicleState.ReadyToLeaveIntersection && Queue.Contains(vehicle))
                 {
                     vehicle.CurrentEdge = state.edgePipes
                         .FirstOrDefault(ep => ep.Edges.Any(e => e.ID == vehicle.NextEdge.ID)).Edges
@@ -73,7 +67,7 @@ namespace car_traffic_simulation.objects
                     vehicle.Position.Y = vehicle.CurrentEdge.From.Y;
                     vehicle.NewPositionY = vehicle.Position.Y;
                     vehicle.NewPositionX = vehicle.Position.X;
-                    vehicle.State = State.Move;
+                    vehicle.State = VehicleState.Move;
 
                     Queue.Remove(vehicle);
                     IsBusy = false;
@@ -85,7 +79,7 @@ namespace car_traffic_simulation.objects
                 Random r = new Random();
 
                 CurrentVehicle = Queue.First();
-                CurrentVehicle.State = State.OnIntersection;
+                CurrentVehicle.State = VehicleState.OnIntersection;
                 CurrentVehicle.CurrentIntersectionID = null;
                 var edges = intersectionPipes.Where
                         (ip => ip.IntersectionType == IntersectionPipeType.Out

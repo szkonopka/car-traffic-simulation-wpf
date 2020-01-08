@@ -39,10 +39,6 @@ namespace car_traffic_simulation.engines
                 .InitializeRoadRepository()
                 .GetAllFromFile("../../data/Roads.xml");
 
-            edgePipes = RoadRepository
-                .InitializeRoadRepository()
-                .GetAllFromFile("../../data/Roads.xml");
-
             vehicles = VehicleRepository
                 .InitializeVehicleRepository()
                 .GetAllFromFile("../../data/Vehicles.xml", edgePipes);
